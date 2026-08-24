@@ -1,0 +1,1995 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Life Dashboard">
+<meta name="theme-color" content="#FFD489">
+<title>Life Dashboard</title>
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --bg:#FFF3DF;
+  --bg-grad:linear-gradient(180deg,#FFD489 0%,#FFF3DF 260px);
+  --surface:#FFFFFF;
+  --surface2:#FFEACB;
+  --ink:#38220F;
+  --ink2:#9A7141;
+  --ink3:#C6A87C;
+  --line:#F6DDB6;
+  --accent:#FF5714;
+  --accent-ink:#FFF8F0;
+  --gold:#FFAD05;
+  --blue:#2E5BFF;
+  --danger:#F2402E;
+  --shadow:0 1px 2px rgba(150,80,20,.07),0 6px 20px rgba(150,80,20,.10);
+  --sheet-shadow:0 -8px 40px rgba(90,40,5,.28);
+  --c-film:#FF5714; --c-reading:#2E5BFF; --c-drawing:#FFAD05; --c-music:#B333FF;
+  --c-fashion:#FF2E8A; --c-lifting:#FF3B30; --c-golf:#12C95B; --c-skiing:#00AEFF;
+  --c-cooking:#FF8A00; --c-tennis:#8FC700; --c-journal:#00C2A8;
+  --t-film:#FFE2D2; --t-reading:#DEE6FF; --t-drawing:#FFEFC5; --t-music:#F2E0FF;
+  --t-fashion:#FFDCEC; --t-lifting:#FFDEDA; --t-golf:#D6F5E1; --t-skiing:#D4EFFF;
+  --t-cooking:#FFE8CA; --t-tennis:#ECF5C8; --t-journal:#D0F4EC;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1B1005;
+    --bg-grad:linear-gradient(180deg,#3A1B02 0%,#1B1005 260px);
+    --surface:#281A0C;
+    --surface2:#352511;
+    --ink:#FBEDD6;
+    --ink2:#C7A97F;
+    --ink3:#8C7352;
+    --line:#443019;
+    --accent:#FF7038;
+    --accent-ink:#2E1204;
+    --gold:#FFC23D;
+    --blue:#7D96FF;
+    --danger:#FF6B5E;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);
+    --sheet-shadow:0 -8px 40px rgba(0,0,0,.6);
+    --c-film:#FF7038; --c-reading:#7D96FF; --c-drawing:#FFC23D; --c-music:#CD7DFF;
+    --c-fashion:#FF6FAE; --c-lifting:#FF6B5E; --c-golf:#4FE08D; --c-skiing:#4FC8FF;
+    --c-cooking:#FFA53E; --c-tennis:#B8E03A; --c-journal:#3BDCC0;
+    --t-film:#43200C; --t-reading:#1E2748; --t-drawing:#402D08; --t-music:#371F4A;
+    --t-fashion:#45182C; --t-lifting:#431714; --t-golf:#10331F; --t-skiing:#0E2C3E;
+    --t-cooking:#3E2609; --t-tennis:#2C330D; --t-journal:#0D332C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1B1005;
+  --bg-grad:linear-gradient(180deg,#3A1B02 0%,#1B1005 260px);
+  --surface:#281A0C;
+  --surface2:#352511;
+  --ink:#FBEDD6;
+  --ink2:#C7A97F;
+  --ink3:#8C7352;
+  --line:#443019;
+  --accent:#FF7038;
+  --accent-ink:#2E1204;
+  --gold:#FFC23D;
+  --blue:#7D96FF;
+  --danger:#FF6B5E;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);
+  --sheet-shadow:0 -8px 40px rgba(0,0,0,.6);
+  --c-film:#FF7038; --c-reading:#7D96FF; --c-drawing:#FFC23D; --c-music:#CD7DFF;
+  --c-fashion:#FF6FAE; --c-lifting:#FF6B5E; --c-golf:#4FE08D; --c-skiing:#4FC8FF;
+  --c-cooking:#FFA53E; --c-tennis:#B8E03A; --c-journal:#3BDCC0;
+  --t-film:#43200C; --t-reading:#1E2748; --t-drawing:#402D08; --t-music:#371F4A;
+  --t-fashion:#45182C; --t-lifting:#431714; --t-golf:#10331F; --t-skiing:#0E2C3E;
+  --t-cooking:#3E2609; --t-tennis:#2C330D; --t-journal:#0D332C;
+}
+
+/* ---------- base ---------- */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%}
+body{
+  min-height:100%;
+  background:var(--bg);
+  background-image:var(--bg-grad);
+  background-repeat:no-repeat;
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  font-size:16px;line-height:1.45;
+  overscroll-behavior-y:none;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:ui-rounded,-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI",sans-serif;text-wrap:balance;line-height:1.2}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,select,textarea{
+  font:inherit;color:var(--ink);
+  background:var(--surface2);
+  border:1px solid var(--line);
+  border-radius:10px;padding:10px 12px;width:100%;
+  -webkit-appearance:none;appearance:none;
+}
+input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+label{display:block;font-size:13px;font-weight:600;color:var(--ink2);margin:12px 0 5px;letter-spacing:.02em}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- app frame ---------- */
+#app{max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 96px)}
+.tabbar{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  display:flex;justify-content:space-around;
+  max-width:560px;margin:0 auto;
+  background:color-mix(in srgb,var(--surface) 88%,transparent);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);
+  padding:8px 8px calc(env(safe-area-inset-bottom) + 8px);
+}
+.tabbar button{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;color:var(--ink3);padding:4px 16px;border-radius:12px}
+.tabbar button.on{color:var(--accent)}
+.tabbar svg{width:24px;height:24px}
+
+/* ---------- headers ---------- */
+.apphead{display:flex;align-items:flex-end;justify-content:space-between;margin:6px 2px 18px}
+.apphead .date{font-size:13px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:.08em}
+.apphead h1{font-size:32px;font-weight:800;letter-spacing:-.02em;
+  background:linear-gradient(100deg,var(--accent) 10%,var(--gold) 55%,var(--blue) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.iconbtn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface);box-shadow:var(--shadow);color:var(--ink2);flex:none}
+.iconbtn svg{width:20px;height:20px}
+.pagehead{display:flex;align-items:center;gap:10px;margin:2px 0 16px}
+.pagehead h1{font-size:26px;font-weight:800;letter-spacing:-.01em;flex:1}
+.pagehead .swatch{width:10px;height:26px;border-radius:5px;flex:none}
+.backbtn{display:flex;align-items:center;gap:2px;color:var(--accent);font-weight:600;font-size:15px;padding:6px 8px 6px 0;flex:none}
+.backbtn svg{width:20px;height:20px}
+
+/* ---------- dashboard grid ---------- */
+.summarychip{display:flex;gap:10px;margin-bottom:16px}
+.summarychip .chip{flex:1;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:10px 14px}
+.chip .k{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+.chip .l{font-size:12px;color:var(--ink2);font-weight:600}
+.hobbygrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.hobbycard{
+  background:var(--surface);border-radius:18px;box-shadow:var(--shadow);
+  padding:14px 8px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;
+  transition:transform .1s ease;
+}
+.hobbycard:active{transform:scale(.95)}
+.hobbycard .ic{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center}
+.hobbycard .ic svg{width:28px;height:28px}
+.hobbycard .nm{font-size:12.5px;font-weight:700;color:var(--ink)}
+.hobbycard .sub{font-size:10.5px;color:var(--ink3);font-weight:600;margin-top:-6px}
+
+/* ---------- cards & lists ---------- */
+.card{background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.card h2{font-size:15px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.card h2 .grow{flex:1}
+.badge{background:var(--surface2);border-radius:100px;padding:1px 9px;font-size:12px;font-weight:800;color:var(--ink2);font-variant-numeric:tabular-nums}
+.rowlist{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.row .main{flex:1;min-width:0}
+.row .t{font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .s{font-size:12.5px;color:var(--ink2)}
+.row .num{font-variant-numeric:tabular-nums;font-weight:700;color:var(--ink2);font-size:14px}
+.rowbtn{color:var(--ink3);padding:6px}
+.rowbtn svg{width:18px;height:18px}
+.rowbtn.act{color:var(--accent)}
+.pinbtn{color:var(--ink3);padding:6px}
+.pinbtn.on{color:var(--accent)}
+.pinbtn svg{width:18px;height:18px}
+.empty{color:var(--ink3);font-size:14px;padding:10px 0;text-align:center}
+.showmore{margin-top:10px;width:100%;padding:10px;border-radius:12px;background:var(--surface2);color:var(--ink2);font-weight:700;font-size:13.5px}
+.tag{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;background:var(--surface2);color:var(--ink2);border-radius:100px;padding:2px 8px;flex:none}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chips button{padding:6px 12px;border-radius:100px;background:var(--surface2);font-size:12px;font-weight:700;color:var(--ink2)}
+.chips button.on{background:var(--accent);color:var(--accent-ink)}
+.filterrow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.filterrow select{width:auto;flex:1;padding:8px 10px;font-size:13.5px}
+.coverimg{width:38px;height:38px;border-radius:8px;object-fit:cover;flex:none;background:var(--surface2);display:block}
+
+/* ---------- stat tiles ---------- */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stats.three{grid-template-columns:repeat(3,1fr)}
+.stat{background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:12px 14px;position:relative}
+.stat .k{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.stat .k small{font-size:14px;font-weight:700;color:var(--ink2)}
+.stat .l{font-size:12px;color:var(--ink2);font-weight:600;margin-top:1px}
+.stat .adj{position:absolute;top:8px;right:8px;color:var(--ink3);padding:4px}
+.stat .adj svg{width:14px;height:14px}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:13px;border-radius:14px;font-weight:700;font-size:15.5px;
+  background:var(--accent);color:var(--accent-ink);
+}
+.btn:active{filter:brightness(.92)}
+.btn.quiet{background:var(--surface2);color:var(--ink)}
+.btn.line{background:none;border:1.5px solid var(--line);color:var(--ink2)}
+.btn.danger{background:none;border:1.5px solid var(--danger);color:var(--danger)}
+.btn svg{width:18px;height:18px}
+.btnrow{display:flex;gap:10px;margin-bottom:14px}
+.btnrow .btn{flex:1}
+.addbar{display:flex;gap:8px;margin-top:8px}
+.addbar input{flex:1}
+.addbar button{flex:none;width:44px;border-radius:10px;background:var(--surface2);color:var(--accent);display:flex;align-items:center;justify-content:center}
+.addbar button svg{width:20px;height:20px}
+.linkbtn{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:12px 14px;margin-bottom:14px;color:var(--ink);text-decoration:none;font-weight:700;font-size:15px}
+.linkbtn .lg{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
+.linkbtn .lg svg{width:20px;height:20px}
+.linkbtn .arrow{margin-left:auto;color:var(--ink3)}
+
+/* ---------- stars ---------- */
+.stars{display:inline-flex;gap:2px}
+.stars svg{width:18px;height:18px}
+.stars.big svg{width:30px;height:30px}
+.stars .on{color:var(--gold)}
+.stars .off{color:var(--line)}
+.stars button{display:flex;padding:2px}
+.halfwrap{position:relative;display:inline-flex}
+.halfwrap .half{position:absolute;left:0;top:0;width:50%;overflow:hidden;display:inline-flex}
+
+/* ---------- sheet ---------- */
+.scrim{position:fixed;inset:0;background:rgba(40,16,2,.45);z-index:60;opacity:0;transition:opacity .18s ease}
+.scrim.show{opacity:1}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:61;
+  max-width:560px;margin:0 auto;
+  background:var(--surface);border-radius:22px 22px 0 0;box-shadow:var(--sheet-shadow);
+  padding:10px 18px calc(env(safe-area-inset-bottom) + 18px);
+  transform:translateY(100%);transition:transform .22s cubic-bezier(.3,.9,.4,1);
+  max-height:86vh;overflow-y:auto;
+}
+.sheet.show{transform:translateY(0)}
+.sheet .grab{width:40px;height:4px;border-radius:2px;background:var(--line);margin:2px auto 12px}
+.sheet h2{font-size:19px;font-weight:800;margin-bottom:4px}
+.sheet .sub{font-size:13.5px;color:var(--ink2);margin-bottom:6px}
+.sheet .actions{display:flex;gap:10px;margin-top:18px}
+.sheet .actions .btn{flex:1}
+.pickgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.pickgrid button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 2px;border-radius:14px;background:var(--surface2)}
+.pickgrid .ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.pickgrid .ic svg{width:22px;height:22px}
+.pickgrid span{font-size:10.5px;font-weight:700;color:var(--ink2)}
+.seg{display:flex;background:var(--surface2);border-radius:11px;padding:3px;gap:2px;margin-bottom:12px;overflow-x:auto}
+.seg button{flex:1;padding:7px 10px;border-radius:8px;font-size:13px;font-weight:700;color:var(--ink2);white-space:nowrap}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+
+/* ---------- calendar ---------- */
+.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.calhead h2{font-size:20px;font-weight:800}
+.calhead .navs{display:flex;gap:6px}
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.calgrid .dow{text-align:center;font-size:11px;font-weight:700;color:var(--ink3);padding:4px 0;text-transform:uppercase}
+.cald{
+  aspect-ratio:.82;border-radius:12px;display:flex;flex-direction:column;align-items:center;
+  padding-top:6px;gap:3px;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink);
+}
+.cald.out{color:var(--ink3)}
+.cald.today .dnum{background:var(--accent);color:var(--accent-ink);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:800}
+.cald.sel{background:var(--surface);box-shadow:var(--shadow)}
+.cald .dnum{width:26px;height:26px;display:flex;align-items:center;justify-content:center}
+.cald .dots{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;max-width:34px}
+.cald .dots i{width:5px;height:5px;border-radius:50%;display:block}
+.fab{
+  position:fixed;right:calc(50% - 264px);bottom:calc(env(safe-area-inset-bottom) + 84px);z-index:41;
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--gold));color:#FFF8F0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 20px rgba(255,100,20,.45);
+}
+@media (max-width:592px){.fab{right:20px}}
+.fab svg{width:26px;height:26px}
+
+/* ---------- pins / gallery / charts ---------- */
+.pinboard{display:flex;flex-direction:column;gap:10px}
+.pin{display:flex;align-items:center;gap:12px;background:var(--surface2);border-radius:14px;padding:10px 12px}
+.pin .pdot{width:34px;height:34px;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;flex:none}
+.pin .pdot svg{width:16px;height:16px;transform:rotate(45deg)}
+.pin .main{flex:1;min-width:0}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gal .ph{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:1;background:var(--surface2)}
+.gal .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.gal .ph .cap{position:absolute;left:0;right:0;bottom:0;font-size:10px;font-weight:700;color:#FFF8F0;background:linear-gradient(transparent,rgba(30,10,0,.72));padding:14px 6px 5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chartwrap{overflow-x:auto}
+.chart{width:100%;height:auto;display:block}
+.chart .bar{rx:3}
+.chart text{font-family:-apple-system,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.attn{display:flex;flex-direction:column;gap:8px}
+.attn .arow{display:flex;align-items:center;gap:10px;background:var(--surface2);border-radius:12px;padding:9px 12px}
+.attn .arow .ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:none}
+.attn .arow .ic svg{width:16px;height:16px}
+.attn .arow .t{flex:1;font-weight:700;font-size:14px}
+.attn .arow .d{font-size:12.5px;font-weight:700;color:var(--ink2);font-variant-numeric:tabular-nums}
+.attn .arow.warn .d{color:var(--danger)}
+.anselect{margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.anselect select{font-weight:700}
+
+/* ---------- misc ---------- */
+.toast{
+  position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 100px);transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:100px;font-weight:700;font-size:14px;
+  opacity:0;transition:all .25s ease;z-index:80;pointer-events:none;white-space:nowrap;box-shadow:var(--shadow);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.note{font-size:12.5px;color:var(--ink3);margin-top:10px;line-height:1.5}
+.exname{font-weight:700;font-size:14.5px;margin-bottom:6px}
+.exgrid{display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr;gap:6px;margin-bottom:4px}
+.exgrid input,.exgrid select{padding:8px 6px;text-align:center;font-size:14px;font-variant-numeric:tabular-nums;border-radius:8px}
+.exgrid .cl{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;text-align:center}
+.exrow{padding:12px 0;border-bottom:1px solid var(--line)}
+.exrow:last-child{border-bottom:none}
+.exrow input.notes{margin-top:6px;font-size:13px;padding:7px 10px;text-align:left;border-radius:8px}
+.dayvol{text-align:right;font-weight:800;margin-top:8px;font-variant-numeric:tabular-nums;font-size:13px;color:var(--ink2)}
+.hr{height:1px;background:var(--line);margin:14px 0;border:none}
+.hidden{display:none!important}
+</style>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+</head>
+<body>
+<div id="app"></div>
+<nav class="tabbar" id="tabbar"></nav>
+<div id="overlay"></div>
+<div class="toast" id="toast"></div>
+<script>
+'use strict';
+/* ============================================================
+   Hobby Hub — single-file hobby dashboard
+   ============================================================ */
+
+/* ---------- icons (inline SVG, stroke style) ---------- */
+const SW='stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"';
+const ICONS={
+  film:`<svg viewBox="0 0 24 24" ${SW}><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9h18M7 5l2 4M12 5l2 4M17 5l2 4"/></svg>`,
+  reading:`<svg viewBox="0 0 24 24" ${SW}><path d="M12 6.5C10.5 5 8.5 4.5 6 4.5c-1 0-2 .2-3 .5v13c1-.3 2-.5 3-.5 2.5 0 4.5.5 6 2 1.5-1.5 3.5-2 6-2 1 0 2 .2 3 .5v-13c-1-.3-2-.5-3-.5-2.5 0-4.5.5-6 2z"/><path d="M12 6.5v13"/></svg>`,
+  drawing:`<svg viewBox="0 0 24 24" ${SW}><path d="M4 20l1.2-4.2L16.4 4.6a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8.2 18.8 4 20z"/><path d="M14.5 6.5l3 3"/></svg>`,
+  music:`<svg viewBox="0 0 24 24" ${SW}><circle cx="7" cy="17" r="3"/><circle cx="17" cy="15" r="3"/><path d="M10 17V6.5L20 4.5V15"/></svg>`,
+  fashion:`<svg viewBox="0 0 24 24" ${SW}><path d="M12 7a2 2 0 1 1 2-2M12 7l-9 6.5a1.2 1.2 0 0 0 .7 2.2h16.6a1.2 1.2 0 0 0 .7-2.2L12 7z"/></svg>`,
+  lifting:`<svg viewBox="0 0 24 24" ${SW}><path d="M2.5 12h2M19.5 12h2M8 12h8"/><rect x="4.5" y="7.5" width="3" height="9" rx="1"/><rect x="16.5" y="7.5" width="3" height="9" rx="1"/></svg>`,
+  golf:`<svg viewBox="0 0 24 24" ${SW}><path d="M7 3v14M7 3l8 3-8 3"/><path d="M3.5 20c1-1.5 2-2 3.5-2s2.5.5 3.5 2"/><circle cx="16.5" cy="19" r="1.6"/></svg>`,
+  skiing:`<svg viewBox="0 0 24 24" ${SW}><path d="M12 3v18M12 3l4 4M12 3L8 7M12 21l4-4M12 21l-4-4M4.2 7.5l15.6 9M4.2 16.5l15.6-9M12 9.5l2.2 2.5L12 14.5 9.8 12z"/></svg>`,
+  cooking:`<svg viewBox="0 0 24 24" ${SW}><path d="M4 11h16v3a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6v-3z"/><path d="M20 12.5h1.5a0 0 0 0 1 0 0 2.5 2.5 0 0 1-2.5 2.5"/><path d="M9 7.5c0-1 .8-1.2.8-2.2M13 7.5c0-1 .8-1.2.8-2.2"/></svg>`,
+  tennis:`<svg viewBox="0 0 24 24" ${SW}><circle cx="12" cy="12" r="8.5"/><path d="M5 6.5c3 1.5 4.5 3.5 4.5 5.5S8 16 5 17.5M19 6.5c-3 1.5-4.5 3.5-4.5 5.5s1.5 3.5 4.5 5.5"/></svg>`,
+  journal:`<svg viewBox="0 0 24 24" ${SW}><rect x="4.5" y="3.5" width="15" height="17" rx="2"/><path d="M8.5 3.5v17M12 8.5h4M12 12h4"/></svg>`,
+  cal:`<svg viewBox="0 0 24 24" ${SW}><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>`,
+  chart:`<svg viewBox="0 0 24 24" ${SW}><path d="M4 20h16"/><path d="M6.5 20v-6M11 20V9M15.5 20v-9.5M20 20V5.5" stroke-width="2.6"/></svg>`,
+  grid:`<svg viewBox="0 0 24 24" ${SW}><rect x="4" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.8"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.8"/></svg>`,
+  plus:`<svg viewBox="0 0 24 24" ${SW} stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>`,
+  chevL:`<svg viewBox="0 0 24 24" ${SW} stroke-width="2.2"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>`,
+  chevR:`<svg viewBox="0 0 24 24" ${SW} stroke-width="2.2"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>`,
+  trash:`<svg viewBox="0 0 24 24" ${SW}><path d="M5 7h14M9.5 7V5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v2M7 7l.8 12a1.5 1.5 0 0 0 1.5 1.4h5.4a1.5 1.5 0 0 0 1.5-1.4L17 7"/></svg>`,
+  edit:`<svg viewBox="0 0 24 24" ${SW}><path d="M4 20l1-3.8L15.7 5.5a1.8 1.8 0 0 1 2.5 0l.3.3a1.8 1.8 0 0 1 0 2.5L7.8 19 4 20z"/></svg>`,
+  gear:`<svg viewBox="0 0 24 24" ${SW}><circle cx="12" cy="12" r="3.2"/><path d="M12 3.5v2.4M12 18.1v2.4M3.5 12h2.4M18.1 12h2.4M6 6l1.7 1.7M16.3 16.3L18 18M18 6l-1.7 1.7M7.7 16.3L6 18"/></svg>`,
+  check:`<svg viewBox="0 0 24 24" ${SW} stroke-width="2.4"><path d="M4.5 12.5l5 5L19.5 7"/></svg>`,
+  ext:`<svg viewBox="0 0 24 24" ${SW}><path d="M13.5 5H19v5.5M19 5l-8 8M16 13.5V18a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 18V9.5A1.5 1.5 0 0 1 6 8h4.5"/></svg>`,
+  camera:`<svg viewBox="0 0 24 24" ${SW}><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2L9 4.5h6L16.5 7h2A1.5 1.5 0 0 1 20 8.5v9A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5v-9z"/><circle cx="12" cy="12.8" r="3.4"/></svg>`,
+  clock:`<svg viewBox="0 0 24 24" ${SW}><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>`,
+  pinIc:`<svg viewBox="0 0 24 24" ${SW}><path d="M12 21s-6.5-5.6-6.5-10.3A6.4 6.4 0 0 1 12 4.2a6.4 6.4 0 0 1 6.5 6.5C18.5 15.4 12 21 12 21z"/><circle cx="12" cy="10.7" r="2.2"/></svg>`,
+  star:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.7 5.9 6.4.7-4.8 4.4 1.3 6.3L12 17l-5.6 3.1 1.3-6.3-4.8-4.4 6.4-.7z"/></svg>`,
+  pin:`<svg viewBox="0 0 24 24" ${SW}><path d="M9.5 3.5h5l-.8 6 3.3 3.5H7l3.3-3.5-.8-6zM12 13v7.5"/></svg>`,
+  search:`<svg viewBox="0 0 24 24" ${SW}><circle cx="11" cy="11" r="6.5"/><path d="M15.8 15.8L20.5 20.5"/></svg>`,
+};
+
+/* ---------- hobby registry ---------- */
+const HOBBIES=[
+  {key:'film',    name:'Film',      unit:'movies'},
+  {key:'reading', name:'Reading',   unit:'books'},
+  {key:'drawing', name:'Drawing',   unit:'drawings'},
+  {key:'music',   name:'Music',     unit:'albums'},
+  {key:'fashion', name:'Closet',    unit:''},
+  {key:'lifting', name:'Lifting',   unit:'sessions'},
+  {key:'golf',    name:'Golfing',   unit:'rounds'},
+  {key:'skiing',  name:'Skiing',    unit:'days'},
+  {key:'cooking', name:'Cooking',   unit:'logs'},
+  {key:'tennis',  name:'Tennis',    unit:'sessions'},
+  {key:'journal', name:'Journaling',unit:'entries'},
+];
+const H=Object.fromEntries(HOBBIES.map(h=>[h.key,h]));
+const hcolor=k=>`var(--c-${k})`;
+const htint=k=>`var(--t-${k})`;
+
+/* ---------- lifting program (seeded from Drew's Google Sheet) ---------- */
+const PROGRAM_DAYS=[
+  {title:'Bis + Chest', ex:[['Forearm Curl',2],['Preacher Curl',2],['Hammer Curl',2],['Smith Incline',2],['Pec Dec',2]]},
+  {title:'Tris + Traps',ex:[['Smith J.M. Press',3],['Tricep Extension',2],['T-Bar',2],['Kelso Shrugs',1],['Core',1]]},
+  {title:'Legs',        ex:[['Smith Squats',2],['Leg Press',1],['Leg Extension',2],['Leg Curl',2]]},
+  {title:'Shoulders + Lats',ex:[['Rev Pec Dec',3],['Lateral Raise',2],['Pulldowns',2],['SA Cable Row',1]]},
+];
+const N_CYCLES=12;
+
+/* ---------- state ---------- */
+const KEY='hobbyhub.v1';
+function defaultState(){
+  return {
+    logs:[],            // {id,hobby,type,date:'YYYY-MM-DD', ...payload}
+    offsets:{},         // e.g. {'film.total':3,'drawing.minutes':120}
+    film:{watchlist:[{id:uid(),title:'Dune: Part Two'},{id:uid(),title:'Whiplash'},{id:uid(),title:'The Grand Budapest Hotel'}]},
+    reading:{toRead:[],read:[]},   // read: {id,title,author,rating,date}
+    music:{listenList:[],rated:[]},// rated: {id,title,artist,rating,date}
+    lifting:{cycle:1,data:{}},     // data['c1'][dayIdx][exIdx] = {sets,reps,weight,rir,notes}
+    golf:{courses:[]},             // {id,name,location}
+    skiing:{resorts:[]},
+    cooking:{recipes:[],restaurants:[]}, // recipes {id,title,ingredients,steps,date}; restaurants {id,name,location,rating,want}
+    closet:{items:[],wishlist:[]},       // items {id,name,cat,sub}; wishlist {id,name}
+    journalDraft:null,
+    lastBackup:null,
+  };
+}
+function uid(){return Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);}
+let state, lsHadKey=false;
+try{ const raw=localStorage.getItem(KEY); lsHadKey=!!raw; state=raw?JSON.parse(raw):defaultState(); }catch(e){ state=defaultState(); }
+// merge any new top-level keys added in later versions
+(function(){const d=defaultState();for(const k in d){if(state[k]===undefined)state[k]=d[k];}})();
+function save(){
+  const json=JSON.stringify(state);
+  try{ localStorage.setItem(KEY,json); }catch(e){ toast('Storage full — export a backup'); }
+  try{ kvSave(json); }catch(e){}
+}
+// second copy of state in IndexedDB — survives some cases where localStorage is cleared
+function kvSave(json){
+  if(idb&&idb.objectStoreNames.contains('kv')){
+    try{ idb.transaction('kv','readwrite').objectStore('kv').put({id:'state',json:json||JSON.stringify(state)}); }catch(e){}
+  }
+}
+
+/* ---------- dates ---------- */
+const DAY=86400000;
+function dstr(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${dd}`;}
+function todayStr(){return dstr(new Date());}
+function parseD(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+function daysBetween(a,b){return Math.round((parseD(b)-parseD(a))/DAY);}
+function inLastDays(dateStr,n){const diff=daysBetween(dateStr,todayStr());return diff>=0&&diff<n;}
+function fmtDate(s){const d=parseD(s);return d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:d.getFullYear()===new Date().getFullYear()?undefined:'numeric'});}
+function fmtMin(min){min=Math.round(min);if(min<60)return min+'m';const h=Math.floor(min/60),m=min%60;return m?`${h}h ${m}m`:`${h}h`;}
+function startOfWeek(d){const x=new Date(d);const dow=(x.getDay()+6)%7;x.setDate(x.getDate()-dow);x.setHours(0,0,0,0);return x;}
+
+/* ---------- logs ---------- */
+function addLog(hobby,type,payload={},date){
+  const log={id:uid(),hobby,type,date:date||todayStr(),...payload};
+  state.logs.push(log); save(); return log;
+}
+function delLog(id){
+  const log=state.logs.find(l=>l.id===id);
+  state.logs=state.logs.filter(l=>l.id!==id);
+  if(log&&log.photoId) photoDelete(log.photoId);
+  save();
+}
+function logs(hobby,type){return state.logs.filter(l=>(!hobby||l.hobby===hobby)&&(!type||l.type===type));}
+function countLast(hobby,type,days){return logs(hobby,type).filter(l=>inLastDays(l.date,days)).length;}
+function sumLast(hobby,type,field,days){return logs(hobby,type).filter(l=>days==null||inLastDays(l.date,days)).reduce((a,l)=>a+(Number(l[field])||0),0);}
+function off(key){return state.offsets[key]||0;}
+
+/* ---------- photos (IndexedDB) ---------- */
+let photoCache=new Map(); // id -> {id,dataUrl,kind,title,origin,date}
+let idb=null;
+function idbOpen(){
+  return new Promise((res)=>{
+    const rq=indexedDB.open('hobbyhub-photos',2);
+    rq.onupgradeneeded=()=>{
+      const db=rq.result;
+      if(!db.objectStoreNames.contains('photos'))db.createObjectStore('photos',{keyPath:'id'});
+      if(!db.objectStoreNames.contains('kv'))db.createObjectStore('kv',{keyPath:'id'});
+    };
+    rq.onsuccess=()=>res(rq.result);
+    rq.onerror=()=>res(null);
+  });
+}
+async function photosInit(){
+  idb=await idbOpen(); if(!idb)return;
+  await new Promise(res=>{
+    const tx=idb.transaction('photos','readonly').objectStore('photos').getAll();
+    tx.onsuccess=()=>{ (tx.result||[]).forEach(p=>photoCache.set(p.id,p)); res(); };
+    tx.onerror=()=>res();
+  });
+  // if localStorage was wiped but the IndexedDB copy survived, recover from it
+  if(!lsHadKey&&idb.objectStoreNames.contains('kv')){
+    await new Promise(res=>{
+      try{
+        const rq=idb.transaction('kv','readonly').objectStore('kv').get('state');
+        rq.onsuccess=()=>{
+          try{
+            const rec=rq.result;
+            if(rec&&rec.json){
+              const recovered=JSON.parse(rec.json);
+              if(recovered&&Array.isArray(recovered.logs)&&recovered.logs.length>state.logs.length){
+                state=recovered;
+                (function(){const d=defaultState();for(const k in d){if(state[k]===undefined)state[k]=d[k];}})();
+                save(); toast('Recovered your saved data');
+              }
+            }
+          }catch(e){}
+          res();
+        };
+        rq.onerror=()=>res();
+      }catch(e){res();}
+    });
+  }
+}
+function photoPut(p){
+  photoCache.set(p.id,p);
+  if(idb){ try{ idb.transaction('photos','readwrite').objectStore('photos').put(p); }catch(e){} }
+}
+function photoDelete(id){
+  photoCache.delete(id);
+  if(idb){ try{ idb.transaction('photos','readwrite').objectStore('photos').delete(id); }catch(e){} }
+}
+function photosOf(kind){return [...photoCache.values()].filter(p=>p.kind===kind).sort((a,b)=>a.date<b.date?1:-1);}
+function pickImage(cb){
+  const inp=document.createElement('input');
+  inp.type='file'; inp.accept='image/*';
+  inp.onchange=()=>{
+    const f=inp.files[0]; if(!f)return;
+    const img=new Image();
+    img.onload=()=>{
+      const MAX=900;
+      let w=img.width,h=img.height;
+      if(Math.max(w,h)>MAX){const s=MAX/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s);}
+      const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h);
+      cb(cv.toDataURL('image/jpeg',.82));
+      URL.revokeObjectURL(img.src);
+    };
+    img.src=URL.createObjectURL(f);
+  };
+  inp.click();
+}
+
+/* ---------- tiny DOM helpers ---------- */
+const $=s=>document.querySelector(s);
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+let toastT=null;
+function toast(msg){
+  const t=$('#toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),1800);
+}
+function starHtml(i,v){
+  // one star: full, half, or off (half = clipped overlay, no SVG ids needed)
+  if(i<=v)return `<span class="on">${ICONS.star}</span>`;
+  if(v===i-0.5)return `<span class="halfwrap"><span class="off">${ICONS.star}</span><span class="half"><span class="on">${ICONS.star}</span></span></span>`;
+  return `<span class="off">${ICONS.star}</span>`;
+}
+function stars(rating,size){
+  let s=`<span class="stars${size==='big'?' big':''}">`;
+  for(let i=1;i<=5;i++)s+=starHtml(i,rating);
+  return s+'</span>';
+}
+function fmtStars(r){return (r%1?r.toFixed(1):String(r));}
+function mapsUrl(name,loc){return 'https://maps.apple.com/?q='+encodeURIComponent(name+(loc?' '+loc:''));}
+
+/* ---------- sheet (bottom modal) ---------- */
+let sheetEl=null;
+function openSheet({title,sub,body,actions,onMount}){
+  closeSheet(true);
+  const ov=$('#overlay');
+  ov.innerHTML=`<div class="scrim"></div><div class="sheet" role="dialog" aria-label="${esc(title)}">
+    <div class="grab"></div>
+    ${title?`<h2>${esc(title)}</h2>`:''}
+    ${sub?`<div class="sub">${esc(sub)}</div>`:''}
+    <div class="sheet-body">${body||''}</div>
+    ${actions?`<div class="actions">${actions.map((a,i)=>`<button class="btn ${a.style||''}" data-sa="${i}">${esc(a.label)}</button>`).join('')}</div>`:''}
+  </div>`;
+  const scrim=ov.querySelector('.scrim');
+  sheetEl=ov.querySelector('.sheet');
+  scrim.addEventListener('click',()=>closeSheet());
+  if(actions) actions.forEach((a,i)=>{
+    sheetEl.querySelector(`[data-sa="${i}"]`).addEventListener('click',()=>{ if(a.handler(sheetEl)!==false) closeSheet(); });
+  });
+  if(onMount) onMount(sheetEl);
+  const sEl=sheetEl;
+  requestAnimationFrame(()=>{scrim.classList.add('show');sEl.classList.add('show');});
+}
+function closeSheet(instant){
+  const ov=$('#overlay');
+  if(!ov.firstChild)return;
+  if(instant){ov.innerHTML='';sheetEl=null;return;}
+  ov.querySelector('.scrim')?.classList.remove('show');
+  ov.querySelector('.sheet')?.classList.remove('show');
+  setTimeout(()=>{ov.innerHTML='';},230);
+  sheetEl=null;
+}
+
+/* ---------- router ---------- */
+let view={tab:'dash',page:null}; // page: 'film'|'analytics:film'|null
+const viewStack=[];
+function go(v,push=true){
+  if(push) viewStack.push({...view});
+  view=v; render(); window.scrollTo(0,0);
+  history.pushState({},'','#'+(v.page||v.tab));
+}
+function back(){
+  const prev=viewStack.pop();
+  view=prev||{tab:'dash',page:null};
+  render(); window.scrollTo(0,0);
+}
+window.addEventListener('popstate',()=>{ if(viewStack.length){const prev=viewStack.pop();view=prev;render();} });
+</script>
+<script>
+'use strict';
+/* ============================================================
+   Rendering — tabbar, dashboard, hobby pages
+   ============================================================ */
+
+/* transient UI state (not persisted) */
+const SHOWN={};                 // show-more counters per list
+let readFilter='all', musicFilter='all', journalQ='';
+let closetFilter={jackets:'All',pants:'All',shirts:'All'};
+const CLOSET_CATS={
+  jackets:{name:'Jackets',subs:['Sweatshirt','Bomber','Sweater','Shell']},
+  pants:{name:'Pants',subs:['Canvas','Denim','Sweatpants','Linen']},
+  shirts:{name:'Shirts',subs:['Polo','Button-up','Tee','Long sleeve']},
+};
+
+function sliceList(key,arr,renderItem,emptyHtml){
+  const n=SHOWN[key]||3;
+  const shown=arr.slice(0,n).map(renderItem).join('');
+  const hidden=Math.max(0,arr.length-n);
+  const more=hidden>0?`<button class="showmore" data-more="${key}">Show ${Math.min(10,hidden)} more · ${hidden} hidden</button>`:'';
+  return (arr.length?shown:emptyHtml)+more;
+}
+function ratingFilterSel(id,current){
+  const opts=['all',5,4.5,4,3.5,3,2.5,2,1.5,1,0.5].map(v=>
+    `<option value="${v}" ${String(current)===String(v)?'selected':''}>${v==='all'?'All ratings':v+' ★'}</option>`).join('');
+  return `<div class="filterrow"><select id="${id}">${opts}</select></div>`;
+}
+
+function render(){
+  renderTabbar();
+  const app=$('#app');
+  if(view.page) app.innerHTML=PAGES[view.page]();
+  else if(view.tab==='cal') app.innerHTML=pageCalendar();
+  else if(view.tab==='stats') app.innerHTML=pageAnalytics();
+  else app.innerHTML=pageDash();
+  wire(app);
+}
+function renderTabbar(){
+  const tabs=[['dash','Dashboard',ICONS.grid],['cal','Calendar',ICONS.cal],['stats','Analytics',ICONS.chart]];
+  $('#tabbar').innerHTML=tabs.map(([k,n,ic])=>
+    `<button data-tab="${k}" class="${view.tab===k&&!view.page?'on':''}" aria-label="${n}">${ic}<span>${n}</span></button>`).join('');
+  $('#tabbar').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    viewStack.length=0; view={tab:b.dataset.tab,page:null}; render(); window.scrollTo(0,0);
+  }));
+}
+
+/* wire() — attaches handlers common across pages via data attributes */
+function wire(root){
+  root.querySelectorAll('[data-open]').forEach(el=>el.addEventListener('click',()=>go({tab:view.tab,page:el.dataset.open})));
+  root.querySelectorAll('[data-back]').forEach(el=>el.addEventListener('click',back));
+  root.querySelectorAll('[data-dellog]').forEach(el=>el.addEventListener('click',()=>{
+    delLog(el.dataset.dellog); render(); toast('Removed');
+  }));
+  root.querySelectorAll('[data-adjust]').forEach(el=>el.addEventListener('click',()=>adjustSheet(el.dataset.adjust,el.dataset.label,Number(el.dataset.current),el.dataset.mode||'count')));
+  root.querySelectorAll('[data-sheet]').forEach(el=>el.addEventListener('click',()=>SHEETS[el.dataset.sheet]&&SHEETS[el.dataset.sheet](el.dataset.arg)));
+  root.querySelectorAll('[data-more]').forEach(el=>el.addEventListener('click',()=>{
+    SHOWN[el.dataset.more]=(SHOWN[el.dataset.more]||3)+10; render();
+  }));
+  root.querySelectorAll('[data-pin]').forEach(el=>el.addEventListener('click',()=>{
+    const b=state.reading.toRead.find(x=>x.id===el.dataset.pin); if(!b)return;
+    if(!b.pinned&&state.reading.toRead.filter(x=>x.pinned).length>=3){toast('Top 3 is full — unpin one first');return;}
+    b.pinned=!b.pinned; save(); render();
+  }));
+  root.querySelectorAll('[data-cf]').forEach(el=>el.addEventListener('click',()=>{
+    const [cat,sub]=el.dataset.cf.split('|'); closetFilter[cat]=sub; render();
+  }));
+  const rf=root.querySelector('#read-filter'); if(rf)rf.addEventListener('change',()=>{readFilter=rf.value;SHOWN['read']=3;render();});
+  const mf=root.querySelector('#music-filter'); if(mf)mf.addEventListener('change',()=>{musicFilter=mf.value;SHOWN['rated']=3;render();});
+  const jq=root.querySelector('#jq'); if(jq)jq.addEventListener('input',()=>{
+    journalQ=jq.value;
+    const list=root.querySelector('#jlist');
+    if(list){ list.innerHTML=journalEntriesHtml(); wire(list); }
+  });
+}
+
+function backBar(title,colorKey){
+  return `<div class="pagehead">
+    <button class="backbtn" data-back>${ICONS.chevL}Back</button>
+    <h1>${esc(title)}</h1>
+    ${colorKey?`<span class="swatch" style="background:${hcolor(colorKey)}"></span>`:''}
+  </div>`;
+}
+function statTile(value,label,adjustKey,current,mode){
+  return `<div class="stat"><div class="k">${value}</div><div class="l">${esc(label)}</div>
+    ${adjustKey?`<button class="adj" data-adjust="${adjustKey}" data-label="${esc(label)}" data-current="${current}" data-mode="${mode||'count'}" aria-label="Adjust ${esc(label)}">${ICONS.edit}</button>`:''}
+  </div>`;
+}
+function adjustSheet(key,label,current,mode){
+  openSheet({
+    title:'Adjust total',
+    sub:`Correct “${label}” — e.g. to count things from before you started using the app.`,
+    body:`<label>New value</label><input id="adj-v" type="number" inputmode="numeric" value="${current}">`,
+    actions:[
+      {label:'Cancel',style:'quiet',handler:()=>{}},
+      {label:'Save',handler:(el)=>{
+        const v=Number(el.querySelector('#adj-v').value);
+        if(isNaN(v))return false;
+        state.offsets[key]=(state.offsets[key]||0)+(v-current);
+        save(); render(); toast('Updated');
+      }},
+    ],
+  });
+}
+function linkBtn(href,label,colorKey,iconKey){
+  return `<a class="linkbtn" href="${href}" target="_blank" rel="noopener">
+    <span class="lg" style="background:${htint(colorKey)};color:${hcolor(colorKey)}">${ICONS[iconKey||colorKey]}</span>
+    ${esc(label)}<span class="arrow">${ICONS.ext}</span></a>`;
+}
+
+/* ---------- dashboard ---------- */
+function pageDash(){
+  const wk=state.logs.filter(l=>inLastDays(l.date,7)).length;
+  const d=new Date();
+  const cards=HOBBIES.map(h=>{
+    let sub;
+    if(h.key==='fashion'){ const n=state.closet.items.length; sub=n?`${n} item${n===1?'':'s'}`:'empty'; }
+    else{
+      const last=logs(h.key).sort((a,b)=>a.date<b.date?1:-1)[0];
+      sub=last?fmtDate(last.date):'no logs yet';
+    }
+    return `<button class="hobbycard" data-open="${h.key}">
+      <span class="ic" style="background:${htint(h.key)};color:${hcolor(h.key)}">${ICONS[h.key]}</span>
+      <span class="nm">${h.name}</span><span class="sub">${sub}</span>
+    </button>`;
+  }).join('');
+  return `
+    <div class="apphead">
+      <div>
+        <div class="date">${d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}</div>
+        <h1>Life Dashboard</h1>
+      </div>
+      <button class="iconbtn" data-sheet="settings" aria-label="Settings">${ICONS.gear}</button>
+    </div>
+    <div class="summarychip">
+      <div class="chip"><div class="k">${wk}</div><div class="l">logs this week</div></div>
+      <div class="chip"><div class="k">${state.logs.length}</div><div class="l">all-time</div></div>
+    </div>
+    <div class="hobbygrid">${cards}</div>
+    <p class="note" style="text-align:center">Tap a hobby to open it · use the + on the Calendar to log anything</p>`;
+}
+
+/* ---------- FILM ---------- */
+function pageFilm(){
+  const total=logs('film','movie').length+off('film.total');
+  const mo=countLast('film','movie',30);
+  const recent=logs('film','movie').sort((a,b)=>a.date<b.date?1:-1);
+  return backBar('Film','film')+`
+    ${linkBtn('https://letterboxd.com','Open Letterboxd','film')}
+    <div class="stats">
+      ${statTile(total,'movies — lifetime','film.total',total)}
+      ${statTile(mo,'past month')}
+    </div>
+    <button class="btn" data-sheet="film-log" style="margin-bottom:14px">${ICONS.plus} Log a movie watched</button>
+    <div class="card"><h2><span class="grow">Watchlist</span><span class="badge">${state.film.watchlist.length}</span></h2>
+      <div class="rowlist">${state.film.watchlist.map(w=>`
+        <div class="row"><div class="main"><div class="t">${esc(w.title)}</div></div>
+          <button class="rowbtn act" data-sheet="film-watched" data-arg="${w.id}" aria-label="Mark watched">${ICONS.check}</button>
+          <button class="rowbtn" data-sheet="film-unwatch" data-arg="${w.id}" aria-label="Remove">${ICONS.trash}</button>
+        </div>`).join('')||'<div class="empty">Nothing queued — add one below</div>'}
+      </div>
+      <div class="addbar"><input id="film-add" placeholder="Add a movie to watch"><button data-sheet="film-addwatch" aria-label="Add">${ICONS.plus}</button></div>
+    </div>
+    <div class="card"><h2><span class="grow">Recently watched</span><span class="badge">${recent.length}</span></h2>
+      <div class="rowlist">${sliceList('filmRecent',recent,l=>`
+        <div class="row"><div class="main"><div class="t">${esc(l.title||'Movie')}</div><div class="s">${fmtDate(l.date)}</div></div>
+          <button class="rowbtn" data-dellog="${l.id}" aria-label="Delete">${ICONS.trash}</button>
+        </div>`,'<div class="empty">No movies logged yet</div>')}
+      </div>
+    </div>`;
+}
+
+/* ---------- READING ---------- */
+function pageReading(){
+  const total=logs('reading','book').length+off('reading.total');
+  const q90=countLast('reading','book',90);
+  const tbr=[...state.reading.toRead].sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0));
+  const readAll=[...state.reading.read].reverse();
+  const readShown=readFilter==='all'?readAll:readAll.filter(b=>Number(b.rating)===Number(readFilter));
+  return backBar('Reading','reading')+`
+    <div class="stats">
+      ${statTile(total,'books — lifetime','reading.total',total)}
+      ${statTile(q90,'last 12 weeks')}
+    </div>
+    <button class="btn" data-sheet="book-log" style="margin-bottom:14px;background:${hcolor('reading')};color:var(--accent-ink)">${ICONS.plus} Log a finished book</button>
+    <div class="card"><h2><span class="grow">To be read</span><span class="badge">${state.reading.toRead.length}</span></h2>
+      <div class="rowlist">${sliceList('tbr',tbr,b=>`
+        <div class="row">
+          <button class="pinbtn ${b.pinned?'on':''}" data-pin="${b.id}" aria-label="${b.pinned?'Unpin':'Pin to top 3'}">${ICONS.pin}</button>
+          <div class="main"><div class="t">${esc(b.title)}</div>${b.author?`<div class="s">${esc(b.author)}</div>`:''}</div>
+          <button class="rowbtn act" data-sheet="book-finish" data-arg="${b.id}" aria-label="Mark read">${ICONS.check}</button>
+          <button class="rowbtn" data-sheet="book-remove" data-arg="${b.id}" aria-label="Remove">${ICONS.trash}</button>
+        </div>`,'<div class="empty">No books queued</div>')}
+      </div>
+      <div class="addbar"><input id="book-add" placeholder="Add a book (title — author)"><button data-sheet="book-addqueue" aria-label="Add">${ICONS.plus}</button></div>
+      <p class="note">Pin up to 3 books to keep them on top.</p>
+    </div>
+    <div class="card"><h2><span class="grow">Read &amp; rated</span><span class="badge">${state.reading.read.length}</span></h2>
+      ${ratingFilterSel('read-filter',readFilter)}
+      <div class="rowlist">${sliceList('read',readShown,b=>`
+        <div class="row"><div class="main"><div class="t">${esc(b.title)}</div><div class="s">${esc(b.author||'')}${b.author?' · ':''}${fmtDate(b.date)}</div></div>
+          <button data-sheet="book-rerate" data-arg="${b.id}" aria-label="Change rating">${stars(b.rating)}</button>
+          <button class="rowbtn" data-sheet="book-delete" data-arg="${b.id}" aria-label="Delete">${ICONS.trash}</button>
+        </div>`,'<div class="empty">'+(readFilter==='all'?'Finish a book to rate it':'No books with that rating')+'</div>')}
+      </div>
+    </div>`;
+}
+
+/* ---------- MUSIC ---------- */
+function pageMusic(){
+  const total=logs('music','album').length+off('music.total');
+  const wk=countLast('music','album',7);
+  const ratedAll=[...state.music.rated].reverse();
+  const ratedShown=musicFilter==='all'?ratedAll:ratedAll.filter(a=>Number(a.rating)===Number(musicFilter));
+  const cover=a=>a.coverId&&photoCache.get(a.coverId)?`<img class="coverimg" src="${photoCache.get(a.coverId).dataUrl}" alt="">`:'';
+  return backBar('Music','music')+`
+    ${linkBtn('https://open.spotify.com','Open Spotify','music')}
+    <div class="stats">
+      ${statTile(total,'albums — lifetime','music.total',total)}
+      ${statTile(wk,'past 7 days')}
+    </div>
+    <button class="btn" data-sheet="album-log" style="margin-bottom:14px;background:${hcolor('music')};color:var(--accent-ink)">${ICONS.plus} Log an album</button>
+    <div class="card"><h2><span class="grow">Listen list</span><span class="badge">${state.music.listenList.length}</span></h2>
+      <div class="rowlist">${sliceList('listen',state.music.listenList,a=>`
+        <div class="row"><div class="main"><div class="t">${esc(a.title)}</div>${a.artist?`<div class="s">${esc(a.artist)}</div>`:''}</div>
+          <button class="rowbtn act" data-sheet="album-finish" data-arg="${a.id}" aria-label="Mark listened">${ICONS.check}</button>
+          <button class="rowbtn" data-sheet="album-remove" data-arg="${a.id}" aria-label="Remove">${ICONS.trash}</button>
+        </div>`,'<div class="empty">No albums queued</div>')}
+      </div>
+      <div class="addbar"><input id="album-add" placeholder="Add an album (title — artist)"><button data-sheet="album-addqueue" aria-label="Add">${ICONS.plus}</button></div>
+    </div>
+    <div class="card"><h2><span class="grow">Rated albums</span><span class="badge">${state.music.rated.length}</span></h2>
+      ${ratingFilterSel('music-filter',musicFilter)}
+      <div class="rowlist">${sliceList('rated',ratedShown,a=>`
+        <div class="row">${cover(a)}<div class="main"><div class="t">${esc(a.title)}</div><div class="s">${esc(a.artist||'')}${a.artist?' · ':''}${fmtDate(a.date)}</div></div>
+          <button data-sheet="album-rerate" data-arg="${a.id}" aria-label="Change rating">${stars(a.rating)}</button>
+          <button class="rowbtn" data-sheet="album-cover" data-arg="${a.id}" aria-label="Add cover art">${ICONS.camera}</button>
+          <button class="rowbtn" data-sheet="album-delete" data-arg="${a.id}" aria-label="Delete">${ICONS.trash}</button>
+        </div>`,'<div class="empty">'+(musicFilter==='all'?'Log an album to rate it':'No albums with that rating')+'</div>')}
+      </div>
+      <p class="note">Tap the camera on an album to add its cover from your photos.</p>
+    </div>`;
+}
+
+/* ---------- DRAWING ---------- */
+function pageDrawing(){
+  const count=logs('drawing','drawing').length+off('drawing.count');
+  const mo=countLast('drawing','drawing',30);
+  const gallery=photosOf('drawing');
+  return backBar('Drawing','drawing')+`
+    <div class="stats">
+      ${statTile(count,'drawings — lifetime','drawing.count',count)}
+      ${statTile(mo,'past month')}
+    </div>
+    <button class="btn" data-sheet="draw-add" style="margin-bottom:14px;background:${hcolor('drawing')};color:var(--accent-ink)">${ICONS.camera} Add drawing</button>
+    <div class="card"><h2><span class="grow">Gallery</span><span class="badge">${gallery.length}</span></h2>
+      ${gallery.length?`<div class="gal">${gallery.map(p=>`
+        <button class="ph" data-sheet="photo-view" data-arg="${p.id}"><img src="${p.dataUrl}" alt="${esc(p.title||'Drawing')}">${p.title?`<span class="cap">${esc(p.title)}</span>`:''}</button>`).join('')}</div>`
+      :'<div class="empty">Add your first drawing from your camera roll</div>'}
+    </div>`;
+}
+
+/* ---------- CLOSET ---------- */
+function pageCloset(){
+  const catCard=(cat)=>{
+    const cfg=CLOSET_CATS[cat];
+    const items=state.closet.items.filter(i=>i.cat===cat);
+    const f=closetFilter[cat];
+    const shown=f==='All'?items:items.filter(i=>i.sub===f);
+    return `<div class="card">
+      <h2><span class="grow">${cfg.name}</span><span class="badge">${items.length}</span>
+        <button class="rowbtn act" data-sheet="closet-add" data-arg="${cat}" aria-label="Add ${cfg.name}">${ICONS.plus}</button></h2>
+      <div class="chips">${['All',...cfg.subs].map(s=>`<button class="${f===s?'on':''}" data-cf="${cat}|${s}">${s}</button>`).join('')}</div>
+      <div class="rowlist">${sliceList('closet-'+cat,shown,i=>`
+        <div class="row"><div class="main"><div class="t">${esc(i.name)}</div></div>
+          <span class="tag">${esc(i.sub)}</span>
+          <button class="rowbtn" data-sheet="closet-del" data-arg="${i.id}" aria-label="Delete">${ICONS.trash}</button>
+        </div>`,'<div class="empty">Nothing here yet</div>')}
+      </div>
+    </div>`;
+  };
+  return backBar('Closet','fashion')+
+    catCard('jackets')+catCard('pants')+catCard('shirts')+`
+    <div class="card"><h2><span class="grow">Wishlist</span><span class="badge">${state.closet.wishlist.length}</span></h2>
+      <div class="rowlist">${sliceList('wishlist',state.closet.wishlist,w=>`
+        <div class="row"><div class="main"><div class="t">${esc(w.name)}</div></div>
+          <button class="rowbtn" data-sheet="wish-del" data-arg="${w.id}" aria-label="Delete">${ICONS.trash}</button>
+        </div>`,'<div class="empty">Nothing on the wishlist</div>')}
+      </div>
+      <div class="addbar"><input id="wish-add" placeholder="Add a piece you want"><button data-sheet="wish-addgo" aria-label="Add">${ICONS.plus}</button></div>
+    </div>`;
+}
+
+/* ---------- LIFTING + DIETING ---------- */
+function exData(cycle,d,e){
+  const c=state.lifting.data['c'+cycle]||{};
+  return (c[d]&&c[d][e])||{};
+}
+function setExData(cycle,d,e,patch){
+  const key='c'+cycle;
+  if(!state.lifting.data[key])state.lifting.data[key]={};
+  if(!state.lifting.data[key][d])state.lifting.data[key][d]={};
+  state.lifting.data[key][d][e]={...state.lifting.data[key][d][e],...patch};
+  save();
+}
+function exVol(x){return (Number(x.sets)||0)*(Number(x.reps)||0)*(Number(x.weight)||0);}
+function dayVolume(cycle,d){
+  return PROGRAM_DAYS[d].ex.reduce((a,_,e)=>a+exVol(exData(cycle,d,e)),0);
+}
+function cycleVolume(c){return PROGRAM_DAYS.reduce((a,_,d)=>a+dayVolume(c,d),0);}
+function pageLifting(){
+  const cyc=state.lifting.cycle;
+  const wk=logs('lifting','workout').filter(l=>parseD(l.date)>=startOfWeek(new Date())).length;
+  const total=logs('lifting','workout').length;
+  const days=PROGRAM_DAYS.map((day,d)=>{
+    const vol=dayVolume(cyc,d);
+    const done=logs('lifting','workout').some(l=>l.cycle===cyc&&l.day===d);
+    return `<div class="row" data-sheet="lift-day" data-arg="${d}" role="button" style="cursor:pointer">
+      <div class="main"><div class="t">${esc(day.title)} ${done?'<span style="color:var(--c-golf)">✓</span>':''}</div>
+      <div class="s">${day.ex.length} exercises</div></div>
+      <span class="num">${vol?vol.toLocaleString():''}</span>${ICONS.chevR.replace('<svg','<svg width="18" height="18" style="color:var(--ink3)"')}
+    </div>`;
+  }).join('');
+  const cycVals=Array.from({length:N_CYCLES},(_,i)=>cycleVolume(i+1));
+  const cycLabels=Array.from({length:N_CYCLES},(_,i)=>'C'+(i+1));
+  return backBar('Lifting + Dieting','lifting')+`
+    ${linkBtn('https://www.myfitnesspal.com','Open MyFitnessPal for dieting','lifting','cooking')}
+    <div class="stats">
+      ${statTile(wk,'lifts this week')}
+      ${statTile(total,'sessions all-time')}
+    </div>
+    <div class="card">
+      <h2><span class="grow">Program</span><span class="num">cycle volume ${cycleVolume(cyc).toLocaleString()}</span></h2>
+      <div class="seg" id="cycseg">${Array.from({length:N_CYCLES},(_,i)=>`<button data-cyc="${i+1}" class="${cyc===i+1?'on':''}">C${i+1}</button>`).join('')}</div>
+      <div class="rowlist">${days}</div>
+    </div>
+    <div class="card"><h2>Cycle volume</h2>${barChart(cycVals,cycLabels,hcolor('lifting'),{allTicks:true})}</div>`;
+}
+function sheetLiftDay(dArg){
+  const d=Number(dArg), cyc=state.lifting.cycle, day=PROGRAM_DAYS[d];
+  const rows=day.ex.map(([name,defSets],e)=>{
+    const x=exData(cyc,d,e);
+    const sets=x.sets??defSets;
+    return `<div class="exrow" data-ex="${e}">
+      <div class="exname">${esc(name)}</div>
+      <div class="exgrid">
+        <span class="cl">Sets</span><span class="cl">Reps</span><span class="cl">Weight</span><span class="cl">RIR</span>
+        <input type="number" inputmode="numeric" data-f="sets" value="${sets??''}" placeholder="—">
+        <input type="number" inputmode="numeric" data-f="reps" value="${x.reps??''}" placeholder="—">
+        <input type="number" inputmode="decimal" data-f="weight" value="${x.weight??''}" placeholder="lb">
+        <select data-f="rir"><option value="">—</option>${[3,2,1,0].map(r=>`<option ${String(x.rir)===String(r)?'selected':''} value="${r}">${r}</option>`).join('')}</select>
+      </div>
+      <input class="notes" data-f="notes" value="${esc(x.notes||'')}" placeholder="Notes">
+    </div>`;
+  }).join('');
+  openSheet({
+    title:day.title, sub:`Microcycle ${cyc}`,
+    body:`<div>${rows}</div><div class="dayvol">day volume <span data-dayvol>${dayVolume(cyc,d).toLocaleString()}</span></div>`,
+    actions:[
+      {label:'Close',style:'quiet',handler:()=>{render();}},
+      {label:'Mark session done',handler:()=>{
+        addLog('lifting','workout',{cycle:cyc,day:d,title:day.title});
+        render(); toast('Session logged 💪');
+      }},
+    ],
+    onMount(el){
+      el.querySelectorAll('.exrow').forEach(rowEl=>{
+        const e=Number(rowEl.dataset.ex);
+        rowEl.querySelectorAll('[data-f]').forEach(inp=>{
+          const evt=inp.tagName==='SELECT'?'change':'input';
+          inp.addEventListener(evt,()=>{
+            setExData(cyc,d,e,{[inp.dataset.f]:inp.value});
+            el.querySelector('[data-dayvol]').textContent=dayVolume(cyc,d).toLocaleString();
+          });
+        });
+      });
+    },
+  });
+}
+
+/* ---------- GOLF ---------- */
+function pageGolf(){
+  const rounds=logs('golf','round');
+  const avg=rounds.length?(rounds.reduce((a,l)=>a+(Number(l.vspar)||0),0)/rounds.length):null;
+  const yr=countLast('golf','round',365);
+  const recent=[...rounds].sort((a,b)=>a.date<b.date?1:-1);
+  return backBar('Golfing','golf')+`
+    <div class="stats three">
+      ${statTile(avg==null?'—':(avg>0?'+':'')+avg.toFixed(1),'handicap')}
+      ${statTile(yr,'rounds — past year')}
+      ${statTile(rounds.length,'rounds all-time')}
+    </div>
+    <button class="btn" data-sheet="golf-round" style="margin-bottom:14px;background:${hcolor('golf')};color:var(--accent-ink)">${ICONS.plus} Log a round</button>
+    <div class="card"><h2><span class="grow">Courses played</span><span class="badge">${state.golf.courses.length}</span><button class="rowbtn act" data-sheet="golf-course" aria-label="Add course">${ICONS.plus}</button></h2>
+      <div class="pinboard">${state.golf.courses.map(c=>{
+        const n=rounds.filter(r=>r.courseId===c.id).length;
+        return `<div class="pin">
+          <span class="pdot" style="background:${htint('golf')};color:${hcolor('golf')}">${ICONS.pinIc}</span>
+          <div class="main"><div class="t">${esc(c.name)}</div><div class="s">${esc(c.location||'')}${c.location?' · ':''}${n} round${n===1?'':'s'}</div></div>
+          <a class="rowbtn" href="${mapsUrl(c.name,c.location)}" target="_blank" rel="noopener" aria-label="Open in Maps">${ICONS.ext}</a>
+          <button class="rowbtn" data-sheet="golf-delcourse" data-arg="${c.id}" aria-label="Delete">${ICONS.trash}</button>
+        </div>`;}).join('')||'<div class="empty">Add the courses you’ve played</div>'}
+      </div>
+    </div>
+    <div class="card"><h2><span class="grow">Recent rounds</span><span class="badge">${recent.length}</span></h2>
+      <div class="rowlist">${sliceList('golfRecent',recent,l=>`
+        <div class="row"><div class="main"><div class="t">${esc(l.course||'Round')}</div><div class="s">${fmtDate(l.date)}</div></div>
+          <span class="num">${l.strokes} · ${l.vspar>0?'+':''}${l.vspar}</span>
+          <button class="rowbtn" data-dellog="${l.id}" aria-label="Delete">${ICONS.trash}</button>
+        </div>`,'<div class="empty">No rounds logged yet</div>')}
+      </div>
+    </div>`;
+}
+
+/* ---------- SKIING ---------- */
+function pageSkiing(){
+  const all=logs('skiing','skiday');
+  const yrLogs=all.filter(l=>l.date.slice(0,4)===String(new Date().getFullYear()));
+  const runsYr=yrLogs.reduce((a,l)=>a+(Number(l.runs)||0),0);
+  const runsTotal=all.reduce((a,l)=>a+(Number(l.runs)||0),0);
+  const perDay=all.length?(runsTotal/all.length):null;
+  const gallery=photosOf('ski');
+  return backBar('Skiing','skiing')+`
+    <div class="stats">
+      ${statTile(yrLogs.length,'days this year')}
+      ${statTile(runsYr,'runs this year')}
+      ${statTile(runsTotal,'runs — total')}
+      ${statTile(perDay==null?'—':perDay.toFixed(1),'runs per ski day')}
+    </div>
+    <button class="btn" data-sheet="ski-day" style="margin-bottom:14px;background:${hcolor('skiing')};color:var(--accent-ink)">${ICONS.plus} Log a ski day</button>
+    <div class="card"><h2><span class="grow">Resorts</span><span class="badge">${state.skiing.resorts.length}</span><button class="rowbtn act" data-sheet="ski-resort" aria-label="Add resort">${ICONS.plus}</button></h2>
+      <div class="pinboard">${state.skiing.resorts.map(r=>{
+        const n=all.filter(l=>l.resortId===r.id).length;
+        return `<div class="pin">
+          <span class="pdot" style="background:${htint('skiing')};color:${hcolor('skiing')}">${ICONS.pinIc}</span>
+          <div class="main"><div class="t">${esc(r.name)}</div><div class="s">${esc(r.location||'')}${r.location?' · ':''}${n} day${n===1?'':'s'}</div></div>
+          <a class="rowbtn" href="${mapsUrl(r.name,r.location)}" target="_blank" rel="noopener" aria-label="Open in Maps">${ICONS.ext}</a>
+          <button class="rowbtn" data-sheet="ski-delresort" data-arg="${r.id}" aria-label="Delete">${ICONS.trash}</button>
+        </div>`;}).join('')||'<div class="empty">Add the resorts you ride</div>'}
+      </div>
+    </div>
+    <div class="card"><h2><span class="grow">Day photos</span><span class="badge">${gallery.length}</span></h2>
+      ${gallery.length?`<div class="gal">${gallery.map(p=>`
+        <button class="ph" data-sheet="photo-view" data-arg="${p.id}"><img src="${p.dataUrl}" alt="${esc(p.title||'Ski day')}">${p.title?`<span class="cap">${esc(p.title)}</span>`:''}</button>`).join('')}</div>`
+      :'<div class="empty">Add a photo when you log a ski day</div>'}
+    </div>`;
+}
+
+/* ---------- COOKING ---------- */
+function pageCooking(){
+  const plates=photosOf('plate');
+  const rated=[...state.cooking.restaurants.filter(r=>!r.want)].sort((a,b)=>b.rating-a.rating);
+  const resv=state.cooking.restaurants.filter(r=>r.want);
+  const nPlates=SHOWN['plates']||3;
+  return backBar('Cooking','cooking')+`
+    <div class="card"><h2><span class="grow">Cookbook</span><span class="badge">${state.cooking.recipes.length}</span><button class="rowbtn act" data-sheet="recipe-add" aria-label="Add recipe">${ICONS.plus}</button></h2>
+      <div class="rowlist">${sliceList('recipes',state.cooking.recipes,r=>`
+        <div class="row" data-sheet="recipe-view" data-arg="${r.id}" role="button" style="cursor:pointer">
+          <div class="main"><div class="t">${esc(r.title)}</div><div class="s">${fmtDate(r.date)}</div></div>
+          ${ICONS.chevR.replace('<svg','<svg width="18" height="18" style="color:var(--ink3)"')}
+        </div>`,'<div class="empty">Save your first recipe</div>')}
+      </div>
+    </div>
+    <div class="card"><h2><span class="grow">Plates</span><span class="badge">${plates.length}</span><button class="rowbtn act" data-sheet="plate-add" aria-label="Add plate">${ICONS.camera}</button></h2>
+      ${plates.length?`<div class="gal">${plates.slice(0,nPlates).map(p=>`
+        <button class="ph" data-sheet="photo-view" data-arg="${p.id}"><img src="${p.dataUrl}" alt="${esc(p.title||'Plate')}"><span class="cap">${esc(p.title||'')}${p.origin?' · '+esc(p.origin):''}</span></button>`).join('')}</div>
+        ${plates.length>nPlates?`<button class="showmore" data-more="plates">Show ${Math.min(10,plates.length-nPlates)} more · ${plates.length-nPlates} hidden</button>`:''}`
+      :'<div class="empty">Snap what you cook (or what you’re served)</div>'}
+    </div>
+    <div class="card"><h2><span class="grow">Restaurants ranked</span><span class="badge">${rated.length}</span><button class="rowbtn act" data-sheet="rest-add" aria-label="Add restaurant">${ICONS.plus}</button></h2>
+      <div class="pinboard">${sliceList('restRated',rated,r=>`
+        <div class="pin">
+          <span class="pdot" style="background:${htint('cooking')};color:${hcolor('cooking')}">${ICONS.pinIc}</span>
+          <div class="main"><div class="t">${esc(r.name)}</div><div class="s">${esc(r.location||'')}</div></div>
+          <button data-sheet="rest-rerate" data-arg="${r.id}" aria-label="Change rating">${stars(r.rating)}</button>
+          <button class="rowbtn" data-sheet="rest-del" data-arg="${r.id}" aria-label="Delete">${ICONS.trash}</button>
+        </div>`,'<div class="empty">Rank the places you’ve eaten</div>')}
+      </div>
+    </div>
+    <div class="card"><h2><span class="grow">Reservations</span><span class="badge">${resv.length}</span><button class="rowbtn act" data-sheet="rest-add" aria-label="Add restaurant">${ICONS.plus}</button></h2>
+      <div class="pinboard">${sliceList('resv',resv,r=>`
+        <div class="pin">
+          <span class="pdot" style="background:var(--surface);color:var(--ink3)">${ICONS.pinIc}</span>
+          <div class="main"><div class="t">${esc(r.name)}</div><div class="s">${esc(r.location||'')}</div></div>
+          <a class="rowbtn" href="${mapsUrl(r.name,r.location)}" target="_blank" rel="noopener" aria-label="Open in Maps">${ICONS.ext}</a>
+          <button class="rowbtn act" data-sheet="rest-tried" data-arg="${r.id}" aria-label="Mark tried">${ICONS.check}</button>
+          <button class="rowbtn" data-sheet="rest-del" data-arg="${r.id}" aria-label="Delete">${ICONS.trash}</button>
+        </div>`,'<div class="empty">Places you want to try live here</div>')}
+      </div>
+    </div>`;
+}
+
+/* ---------- TENNIS ---------- */
+function pageTennis(){
+  const t=(days)=>logs('tennis','session').filter(l=>days==null||inLastDays(l.date,days));
+  const mins=(days)=>t(days).reduce((a,l)=>a+(Number(l.minutes)||0),0);
+  const recent=[...t(null)].sort((a,b)=>a.date<b.date?1:-1);
+  return backBar('Tennis','tennis')+`
+    <div class="stats three">
+      ${statTile(t(365).length,'sessions · year')}
+      ${statTile(fmtMin(mins(7)),'time · 7 days')}
+      ${statTile(fmtMin(mins(365)),'time · year')}
+    </div>
+    <button class="btn" data-sheet="tennis-log" style="margin-bottom:14px;background:${hcolor('tennis')};color:var(--accent-ink)">${ICONS.plus} Log a session</button>
+    <div class="card"><h2><span class="grow">Recent sessions</span><span class="badge">${recent.length}</span></h2>
+      <div class="rowlist">${sliceList('tennisRecent',recent,l=>`
+        <div class="row"><div class="main"><div class="t">${fmtMin(l.minutes||0)}</div><div class="s">${fmtDate(l.date)}</div></div>
+          <button class="rowbtn" data-dellog="${l.id}" aria-label="Delete">${ICONS.trash}</button>
+        </div>`,'<div class="empty">No sessions yet</div>')}
+      </div>
+    </div>`;
+}
+
+/* ---------- JOURNAL ---------- */
+function journalEntriesHtml(){
+  let entries=logs('journal','entry').sort((a,b)=>a.date<b.date?1:-1);
+  const q=journalQ.trim().toLowerCase();
+  if(q)entries=entries.filter(l=>
+    (l.title||'').toLowerCase().includes(q)||
+    (l.body||'').toLowerCase().includes(q)||
+    l.date.includes(q)||
+    fmtDate(l.date).toLowerCase().includes(q));
+  return entries.map(l=>`
+    <div class="card" data-sheet="journal-view" data-arg="${l.id}" role="button" style="cursor:pointer">
+      <div class="s" style="font-size:12px;color:var(--ink3);font-weight:700;text-transform:uppercase;letter-spacing:.05em">${fmtDate(l.date)}</div>
+      <div class="t" style="font-weight:800;font-size:16.5px;margin:2px 0 4px">${esc(l.title||'Untitled')}</div>
+      <div style="font-size:14px;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(l.body||'')}</div>
+    </div>`).join('')||`<div class="empty" style="padding:30px 0">${journalQ?'No entries match that search':'Your first entry is one tap away'}</div>`;
+}
+function pageJournal(){
+  const total=logs('journal','entry').length;
+  return backBar('Journaling','journal')+`
+    <div class="stats"><div class="stat" style="grid-column:1/-1"><div class="k">${total}</div><div class="l">total entries</div></div></div>
+    <button class="btn" data-sheet="journal-new" style="margin-bottom:14px;background:${hcolor('journal')};color:var(--accent-ink)">${ICONS.plus} New entry</button>
+    <div class="card" style="padding:10px 12px"><div style="display:flex;align-items:center;gap:8px">
+      <span style="color:var(--ink3);display:flex">${ICONS.search}</span>
+      <input id="jq" placeholder="Search entries — words or dates" value="${esc(journalQ)}" style="border:none;background:none;padding:6px 0">
+    </div></div>
+    <div id="jlist">${journalEntriesHtml()}</div>`;
+}
+
+const PAGES={
+  film:pageFilm,reading:pageReading,drawing:pageDrawing,music:pageMusic,fashion:pageCloset,
+  lifting:pageLifting,golf:pageGolf,skiing:pageSkiing,cooking:pageCooking,tennis:pageTennis,journal:pageJournal,
+};
+</script>
+<script>
+'use strict';
+/* ============================================================
+   Sheets (add flows), calendar, analytics, backup
+   ============================================================ */
+
+let calMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+let calSel=todayStr();
+let anSel='total';
+function ctxDate(){return view.tab==='cal'&&!view.page?calSel:todayStr();}
+function dateField(){return `<label>Date</label><input type="date" id="sh-date" value="${ctxDate()}">`;}
+function shDate(el){return el.querySelector('#sh-date')?.value||todayStr();}
+
+/* interactive half-star input: tap = full star, tap again = half star */
+function wireStars(el,initial){
+  const box=el.querySelector('[data-starbox]');
+  box.dataset.val=initial||0;
+  const paint=()=>{const v=Number(box.dataset.val);box.querySelectorAll('[data-star]').forEach(b=>{
+    b.innerHTML=starHtml(Number(b.dataset.star),v);});};
+  box.querySelectorAll('[data-star]').forEach(b=>b.addEventListener('click',()=>{
+    const i=Number(b.dataset.star),v=Number(box.dataset.val);
+    box.dataset.val=(v===i)?i-0.5:i;
+    paint();
+  }));
+  paint();
+}
+function starBox(initial){
+  return `<div data-starbox style="margin:8px 0 2px"><span class="stars big">${[1,2,3,4,5].map(i=>
+    `<button type="button" data-star="${i}" aria-label="${i} stars">${starHtml(i,initial||0)}</button>`).join('')}</span></div>
+    <p class="note" style="margin-top:4px">Tap a star twice for a half star.</p>`;
+}
+function starVal(el){return Number(el.querySelector('[data-starbox]').dataset.val)||0;}
+
+const SHEETS={};
+
+/* ---------- settings / backup ---------- */
+SHEETS['settings']=()=>{
+  openSheet({
+    title:'Settings & backup',
+    body:`
+      <p class="sub">Your data lives on this phone. Export a backup now and then — it’s your safety net if the browser ever clears storage.</p>
+      ${state.lastBackup?`<p class="note">Last backup: ${fmtDate(state.lastBackup)}</p>`:'<p class="note" style="color:var(--danger)">No backup yet.</p>'}
+      <div class="actions" style="margin-top:8px">
+        <button class="btn" id="bk-exp">Export backup</button>
+        <button class="btn quiet" id="bk-imp">Import backup</button>
+      </div>
+      <hr class="hr">
+      <button class="btn danger" id="bk-reset">Erase all data</button>
+      <p class="note"><b>Important:</b> always open Life Dashboard the same way — the Home Screen icon. Safari, the Home Screen app, and in-app browsers each keep their own separate copy of your data.</p>`,
+    onMount(el){
+      el.querySelector('#bk-exp').addEventListener('click',exportBackup);
+      el.querySelector('#bk-imp').addEventListener('click',importBackup);
+      el.querySelector('#bk-reset').addEventListener('click',()=>{
+        openSheet({title:'Erase everything?',sub:'This deletes all logs, lists, and photos on this device. A backup file is the only way back.',
+          actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+                   {label:'Erase all data',style:'danger',handler:()=>{
+                      state=defaultState();save();
+                      [...photoCache.keys()].forEach(photoDelete);
+                      render();toast('Erased');}}]});
+      });
+    },
+  });
+};
+async function exportBackup(){
+  const payload=JSON.stringify({app:'hobby-hub',v:1,exported:todayStr(),state,photos:[...photoCache.values()]});
+  const name=`life-dashboard-backup-${todayStr()}.json`;
+  let dl=null;
+  try{ dl=window.claude&&await window.claude.use('downloads'); }catch(e){}
+  if(dl){
+    try{
+      await dl.save({filename:name,data:payload});
+      state.lastBackup=todayStr();save();render();toast('Backup saved');
+      return;
+    }catch(e){ if(e&&e.code==='user_denied'){toast('Backup canceled');return;} }
+  }
+  openSheet({title:'Backup data',sub:'Copy this and save it anywhere safe (Notes, Files…). Paste it back under “Import backup” to restore.',
+    body:`<textarea id="bk-txt" rows="6" readonly style="font-size:11px">${esc(payload)}</textarea>`,
+    actions:[{label:'Copy to clipboard',handler:async(el)=>{
+      try{await navigator.clipboard.writeText(payload);}catch(e){el.querySelector('#bk-txt').select();document.execCommand('copy');}
+      state.lastBackup=todayStr();save();render();toast('Copied');
+    }}]});
+}
+function importBackup(){
+  openSheet({title:'Import backup',sub:'Pick a backup file, or paste backup text below. This replaces what’s on this phone.',
+    body:`<button class="btn quiet" id="imp-file" style="margin-top:6px">Choose backup file</button>
+      <label>Or paste backup text</label><textarea id="imp-txt" rows="4" placeholder="{…}"></textarea>`,
+    actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+      {label:'Restore',handler:(el)=>{const t=el.querySelector('#imp-txt').value.trim();if(!t){toast('Nothing to restore');return false;}return doRestore(t);}}],
+    onMount(el){
+      el.querySelector('#imp-file').addEventListener('click',()=>{
+        const inp=document.createElement('input');inp.type='file';inp.accept='.json,application/json,text/plain';
+        inp.onchange=()=>{const f=inp.files[0];if(!f)return;const r=new FileReader();
+          r.onload=()=>{if(doRestore(r.result)!==false)closeSheet();};r.readAsText(f);};
+        inp.click();
+      });
+    }});
+}
+function doRestore(text){
+  try{
+    const data=JSON.parse(text);
+    if(!data.state||!Array.isArray(data.state.logs))throw 0;
+    state=data.state;
+    (function(){const d=defaultState();for(const k in d){if(state[k]===undefined)state[k]=d[k];}})();
+    save();
+    [...photoCache.keys()].forEach(photoDelete);
+    (data.photos||[]).forEach(photoPut);
+    render();toast('Backup restored');
+  }catch(e){toast('That file isn’t a Life Dashboard backup');return false;}
+}
+
+/* ---------- film ---------- */
+SHEETS['film-log']=()=>openSheet({
+  title:'Log a movie',
+  body:`<label>Title (optional)</label><input id="sh-t" placeholder="What did you watch?">${dateField()}`,
+  actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+    {label:'Log it',handler:(el)=>{addLog('film','movie',{title:el.querySelector('#sh-t').value.trim()},shDate(el));render();toast('Movie logged 🎬');}}],
+});
+SHEETS['film-addwatch']=()=>{
+  const inp=$('#film-add');const t=inp?inp.value.trim():'';
+  if(!t){toast('Type a title first');return;}
+  state.film.watchlist.push({id:uid(),title:t});save();render();toast('Added to watchlist');
+};
+SHEETS['film-watched']=(id)=>{
+  const w=state.film.watchlist.find(x=>x.id===id);if(!w)return;
+  state.film.watchlist=state.film.watchlist.filter(x=>x.id!==id);
+  addLog('film','movie',{title:w.title});render();toast(`Logged “${w.title}”`);
+};
+SHEETS['film-unwatch']=(id)=>{state.film.watchlist=state.film.watchlist.filter(x=>x.id!==id);save();render();};
+
+/* ---------- reading / music ---------- */
+function splitTitle(v){const m=v.split(/\s+[—–-]\s+/);return [m[0].trim(),(m[1]||'').trim()];}
+SHEETS['book-addqueue']=()=>{
+  const v=$('#book-add')?$('#book-add').value.trim():'';if(!v){toast('Type a title first');return;}
+  const [title,author]=splitTitle(v);
+  state.reading.toRead.push({id:uid(),title,author,pinned:false});save();render();toast('Added');
+};
+SHEETS['book-remove']=(id)=>{state.reading.toRead=state.reading.toRead.filter(x=>x.id!==id);save();render();};
+function bookRateSheet({title,author,onDone,initial}){
+  openSheet({title:title?`Rate “${title}”`:'Log a finished book',
+    body:`${title?'':'<label>Title</label><input id="sh-t" placeholder="Book title"><label>Author</label><input id="sh-a" placeholder="Author">'}
+      <label>Your rating</label>${starBox(initial||0)}${dateField()}`,
+    actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+      {label:'Save',handler:(el)=>{
+        const t=title||el.querySelector('#sh-t').value.trim();
+        if(!t){toast('Needs a title');return false;}
+        onDone({title:t,author:author??(el.querySelector('#sh-a')?.value.trim()||''),rating:starVal(el),date:shDate(el)});
+      }}],
+    onMount:(el)=>wireStars(el,initial||0),
+  });
+}
+SHEETS['book-log']=()=>bookRateSheet({onDone:(b)=>{
+  const rec={id:uid(),...b};state.reading.read.push(rec);
+  addLog('reading','book',{title:b.title,refId:rec.id},b.date);render();toast('Book logged 📚');
+}});
+SHEETS['book-finish']=(id)=>{
+  const b=state.reading.toRead.find(x=>x.id===id);if(!b)return;
+  bookRateSheet({title:b.title,author:b.author,onDone:(r)=>{
+    state.reading.toRead=state.reading.toRead.filter(x=>x.id!==id);
+    const rec={id:uid(),...r};state.reading.read.push(rec);
+    addLog('reading','book',{title:r.title,refId:rec.id},r.date);render();toast('Nice — rated & logged');
+  }});
+};
+SHEETS['book-rerate']=(id)=>{
+  const b=state.reading.read.find(x=>x.id===id);if(!b)return;
+  openSheet({title:`Rate “${b.title}”`,body:starBox(b.rating),
+    actions:[{label:'Save',handler:(el)=>{b.rating=starVal(el);save();render();}}],
+    onMount:(el)=>wireStars(el,b.rating)});
+};
+SHEETS['book-delete']=(id)=>{
+  const b=state.reading.read.find(x=>x.id===id);
+  state.reading.read=state.reading.read.filter(x=>x.id!==id);
+  if(b){const l=state.logs.find(x=>x.refId===b.id);if(l)delLog(l.id);}
+  save();render();
+};
+SHEETS['album-addqueue']=()=>{
+  const v=$('#album-add')?$('#album-add').value.trim():'';if(!v){toast('Type an album first');return;}
+  const [title,artist]=splitTitle(v);
+  state.music.listenList.push({id:uid(),title,artist});save();render();toast('Added');
+};
+SHEETS['album-remove']=(id)=>{state.music.listenList=state.music.listenList.filter(x=>x.id!==id);save();render();};
+function albumRateSheet({title,artist,onDone,initial}){
+  openSheet({title:title?`Rate “${title}”`:'Log an album',
+    body:`${title?'':'<label>Album</label><input id="sh-t" placeholder="Album title"><label>Artist</label><input id="sh-a" placeholder="Artist">'}
+      <label>Your rating</label>${starBox(initial||0)}${dateField()}`,
+    actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+      {label:'Save',handler:(el)=>{
+        const t=title||el.querySelector('#sh-t').value.trim();
+        if(!t){toast('Needs a title');return false;}
+        onDone({title:t,artist:artist??(el.querySelector('#sh-a')?.value.trim()||''),rating:starVal(el),date:shDate(el)});
+      }}],
+    onMount:(el)=>wireStars(el,initial||0)});
+}
+SHEETS['album-log']=()=>albumRateSheet({onDone:(a)=>{
+  const rec={id:uid(),...a};state.music.rated.push(rec);
+  addLog('music','album',{title:a.title,refId:rec.id},a.date);render();toast('Album logged 🎧');
+}});
+SHEETS['album-finish']=(id)=>{
+  const a=state.music.listenList.find(x=>x.id===id);if(!a)return;
+  albumRateSheet({title:a.title,artist:a.artist,onDone:(r)=>{
+    state.music.listenList=state.music.listenList.filter(x=>x.id!==id);
+    const rec={id:uid(),...r};state.music.rated.push(rec);
+    addLog('music','album',{title:r.title,refId:rec.id},r.date);render();toast('Rated & logged');
+  }});
+};
+SHEETS['album-rerate']=(id)=>{
+  const a=state.music.rated.find(x=>x.id===id);if(!a)return;
+  openSheet({title:`Rate “${a.title}”`,body:starBox(a.rating),
+    actions:[{label:'Save',handler:(el)=>{a.rating=starVal(el);save();render();}}],
+    onMount:(el)=>wireStars(el,a.rating)});
+};
+SHEETS['album-cover']=(id)=>{
+  const a=state.music.rated.find(x=>x.id===id);if(!a)return;
+  pickImage(dataUrl=>{
+    if(a.coverId)photoDelete(a.coverId);
+    const p={id:uid(),dataUrl,kind:'cover',title:a.title,date:todayStr()};
+    photoPut(p); a.coverId=p.id; save(); render(); toast('Cover added');
+  });
+};
+SHEETS['album-delete']=(id)=>{
+  const a=state.music.rated.find(x=>x.id===id);
+  state.music.rated=state.music.rated.filter(x=>x.id!==id);
+  if(a){
+    if(a.coverId)photoDelete(a.coverId);
+    const l=state.logs.find(x=>x.refId===a.id);if(l)delLog(l.id);
+  }
+  save();render();
+};
+
+/* ---------- drawing ---------- */
+SHEETS['draw-add']=()=>{
+  pickImage(dataUrl=>{
+    openSheet({title:'Add drawing',
+      body:`<img src="${dataUrl}" alt="Preview" style="width:100%;border-radius:14px;max-height:260px;object-fit:cover">
+        <label>Title</label><input id="sh-t" placeholder="Name it">${dateField()}`,
+      actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+        {label:'Save drawing',handler:(el)=>{
+          const p={id:uid(),dataUrl,kind:'drawing',title:el.querySelector('#sh-t').value.trim(),date:shDate(el)};
+          photoPut(p);
+          addLog('drawing','drawing',{title:p.title,photoId:p.id},p.date);
+          render();toast('Drawing saved ✏️');
+        }}]});
+  });
+};
+SHEETS['photo-view']=(id)=>{
+  const p=photoCache.get(id);if(!p)return;
+  const names={plate:'Plate',ski:'Ski day',drawing:'Drawing'};
+  openSheet({title:names[p.kind]||'Photo',
+    body:`<img src="${p.dataUrl}" alt="" style="width:100%;border-radius:14px">
+      <label>Title</label><input id="sh-t" value="${esc(p.title||'')}" placeholder="Title">
+      ${p.kind==='plate'?`<label>Origin</label><input id="sh-o" value="${esc(p.origin||'')}" placeholder="Homemade / restaurant name">`:''}`,
+    actions:[
+      {label:'Delete',style:'danger',handler:()=>{
+        const l=state.logs.find(x=>x.photoId===id);
+        if(l&&l.hobby==='skiing'){delete l.photoId;photoDelete(id);save();}
+        else if(l)delLog(l.id);
+        else photoDelete(id);
+        render();toast('Deleted');
+      }},
+      {label:'Save',handler:(el)=>{
+        p.title=el.querySelector('#sh-t').value.trim();
+        if(p.kind==='plate')p.origin=el.querySelector('#sh-o').value.trim();
+        photoPut(p);render();
+      }}]});
+};
+
+/* ---------- lifting ---------- */
+SHEETS['lift-day']=sheetLiftDay;
+
+/* ---------- closet ---------- */
+SHEETS['closet-add']=(cat)=>{
+  const cfg=CLOSET_CATS[cat];if(!cfg)return;
+  openSheet({title:`Add to ${cfg.name.toLowerCase()}`,
+    body:`<label>Name</label><input id="sh-n" placeholder="e.g. Navy quarter-zip">
+      <label>Type</label><select id="sh-s">${cfg.subs.map(s=>`<option>${s}</option>`).join('')}</select>`,
+    actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+      {label:'Add',handler:(el)=>{
+        const n=el.querySelector('#sh-n').value.trim();if(!n){toast('Needs a name');return false;}
+        state.closet.items.push({id:uid(),name:n,cat,sub:el.querySelector('#sh-s').value});
+        save();render();toast('Added to closet');
+      }}]});
+};
+SHEETS['closet-del']=(id)=>{state.closet.items=state.closet.items.filter(i=>i.id!==id);save();render();};
+SHEETS['wish-addgo']=()=>{
+  const inp=$('#wish-add');const n=inp?inp.value.trim():'';
+  if(!n){toast('Type something first');return;}
+  state.closet.wishlist.push({id:uid(),name:n});save();render();toast('Wishlisted');
+};
+SHEETS['wish-del']=(id)=>{state.closet.wishlist=state.closet.wishlist.filter(w=>w.id!==id);save();render();};
+
+/* ---------- golf ---------- */
+SHEETS['golf-course']=()=>openSheet({title:'Add a course',
+  body:`<label>Course name</label><input id="sh-n" placeholder="e.g. Bethpage Black">
+    <label>Location</label><input id="sh-l" placeholder="City, State">`,
+  actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+    {label:'Add course',handler:(el)=>{
+      const n=el.querySelector('#sh-n').value.trim();if(!n){toast('Needs a name');return false;}
+      state.golf.courses.push({id:uid(),name:n,location:el.querySelector('#sh-l').value.trim()});
+      save();render();toast('Course pinned ⛳');
+    }}]});
+SHEETS['golf-delcourse']=(id)=>{state.golf.courses=state.golf.courses.filter(c=>c.id!==id);save();render();};
+SHEETS['golf-round']=()=>{
+  const opts=state.golf.courses.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+  openSheet({title:'Log a round',
+    body:`<label>Course</label>
+      <select id="sh-c"><option value="">— pick or add below —</option>${opts}</select>
+      <input id="sh-cn" placeholder="…or type a new course name" style="margin-top:8px">
+      <label>Total strokes</label><input id="sh-s" type="number" inputmode="numeric" placeholder="e.g. 92">
+      <label>Score (± par, e.g. +20 or -1)</label><input id="sh-p" type="number" inputmode="numeric" placeholder="e.g. 20">
+      ${dateField()}`,
+    actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+      {label:'Log round',handler:(el)=>{
+        const s=Number(el.querySelector('#sh-s').value);
+        const p=el.querySelector('#sh-p').value;
+        if(!s){toast('Enter total strokes');return false;}
+        if(p===''){toast('Enter your score vs par');return false;}
+        let courseId=el.querySelector('#sh-c').value,courseName='';
+        const newName=el.querySelector('#sh-cn').value.trim();
+        if(newName){const c={id:uid(),name:newName,location:''};state.golf.courses.push(c);courseId=c.id;courseName=newName;}
+        else if(courseId){courseName=(state.golf.courses.find(c=>c.id===courseId)||{}).name||'';}
+        addLog('golf','round',{strokes:s,vspar:Number(p),courseId,course:courseName},shDate(el));
+        render();toast('Round logged ⛳');
+      }}]});
+};
+
+/* ---------- skiing ---------- */
+SHEETS['ski-resort']=()=>openSheet({title:'Add a resort',
+  body:`<label>Resort</label><input id="sh-n" placeholder="e.g. Jackson Hole">
+    <label>Location</label><input id="sh-l" placeholder="State / country">`,
+  actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+    {label:'Add resort',handler:(el)=>{
+      const n=el.querySelector('#sh-n').value.trim();if(!n){toast('Needs a name');return false;}
+      state.skiing.resorts.push({id:uid(),name:n,location:el.querySelector('#sh-l').value.trim()});
+      save();render();toast('Resort pinned 🎿');
+    }}]});
+SHEETS['ski-delresort']=(id)=>{state.skiing.resorts=state.skiing.resorts.filter(r=>r.id!==id);save();render();};
+SHEETS['ski-day']=()=>{
+  const opts=state.skiing.resorts.map(r=>`<option value="${r.id}">${esc(r.name)}</option>`).join('');
+  let pendingPhoto=null;
+  openSheet({title:'Log a ski day',
+    body:`<label>Resort</label><select id="sh-r"><option value="">—</option>${opts}</select>
+      <input id="sh-rn" placeholder="…or type a new resort" style="margin-top:8px">
+      <label>Runs</label><input id="sh-runs" type="number" inputmode="numeric" placeholder="e.g. 14">
+      <label>Photo (optional)</label>
+      <button type="button" class="btn quiet" id="sh-photo">${ICONS.camera} Add a photo from the day</button>
+      <img id="sh-prev" class="hidden" alt="" style="width:100%;border-radius:14px;margin-top:10px;max-height:220px;object-fit:cover">
+      ${dateField()}`,
+    actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+      {label:'Log ski day',handler:(el)=>{
+        let resortId=el.querySelector('#sh-r').value,resortName='';
+        const newName=el.querySelector('#sh-rn').value.trim();
+        if(newName){const r={id:uid(),name:newName,location:''};state.skiing.resorts.push(r);resortId=r.id;resortName=newName;}
+        else if(resortId){resortName=(state.skiing.resorts.find(r=>r.id===resortId)||{}).name||'';}
+        const runs=Number(el.querySelector('#sh-runs').value)||0;
+        const date=shDate(el);
+        const payload={resortId,resort:resortName,runs};
+        if(pendingPhoto){
+          const p={id:uid(),dataUrl:pendingPhoto,kind:'ski',title:resortName||'Ski day',date};
+          photoPut(p); payload.photoId=p.id;
+        }
+        addLog('skiing','skiday',payload,date);
+        render();toast('Ski day logged 🎿');
+      }}],
+    onMount(el){
+      el.querySelector('#sh-photo').addEventListener('click',()=>{
+        pickImage(dataUrl=>{
+          pendingPhoto=dataUrl;
+          const img=el.querySelector('#sh-prev');
+          img.src=dataUrl; img.classList.remove('hidden');
+        });
+      });
+    }});
+};
+
+/* ---------- cooking ---------- */
+SHEETS['recipe-add']=()=>openSheet({title:'New recipe',
+  body:`<label>Title</label><input id="sh-t" placeholder="e.g. Sunday ragù">
+    <label>Ingredients</label><textarea id="sh-i" rows="3" placeholder="One per line"></textarea>
+    <label>Steps</label><textarea id="sh-s" rows="4" placeholder="How it’s made"></textarea>`,
+  actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+    {label:'Save recipe',handler:(el)=>{
+      const t=el.querySelector('#sh-t').value.trim();if(!t){toast('Needs a title');return false;}
+      const r={id:uid(),title:t,ingredients:el.querySelector('#sh-i').value,steps:el.querySelector('#sh-s').value,date:todayStr()};
+      state.cooking.recipes.push(r);
+      addLog('cooking','recipe',{title:t,refId:r.id});
+      render();toast('Recipe saved 🍳');
+    }}]});
+SHEETS['recipe-view']=(id)=>{
+  const r=state.cooking.recipes.find(x=>x.id===id);if(!r)return;
+  openSheet({title:r.title,sub:'Added '+fmtDate(r.date),
+    body:`<label>Title</label><input id="sh-t" value="${esc(r.title)}">
+      <label>Ingredients</label><textarea id="sh-i" rows="3">${esc(r.ingredients||'')}</textarea>
+      <label>Steps</label><textarea id="sh-s" rows="5">${esc(r.steps||'')}</textarea>`,
+    actions:[
+      {label:'Delete',style:'danger',handler:()=>{
+        state.cooking.recipes=state.cooking.recipes.filter(x=>x.id!==id);
+        const l=state.logs.find(x=>x.refId===id);if(l)delLog(l.id);
+        render();toast('Recipe deleted');
+      }},
+      {label:'Save changes',handler:(el)=>{
+        r.title=el.querySelector('#sh-t').value.trim()||r.title;
+        r.ingredients=el.querySelector('#sh-i').value;
+        r.steps=el.querySelector('#sh-s').value;
+        save();render();
+      }}]});
+};
+SHEETS['plate-add']=()=>{
+  pickImage(dataUrl=>{
+    openSheet({title:'Add plate',
+      body:`<img src="${dataUrl}" alt="Preview" style="width:100%;border-radius:14px;max-height:260px;object-fit:cover">
+        <label>Title</label><input id="sh-t" placeholder="e.g. Cacio e pepe">
+        <label>Origin</label><input id="sh-o" placeholder="Homemade / restaurant name">${dateField()}`,
+      actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+        {label:'Save plate',handler:(el)=>{
+          const p={id:uid(),dataUrl,kind:'plate',title:el.querySelector('#sh-t').value.trim(),origin:el.querySelector('#sh-o').value.trim(),date:shDate(el)};
+          photoPut(p);
+          addLog('cooking','plate',{title:p.title,photoId:p.id},p.date);
+          render();toast('Plate saved 🍽️');
+        }}]});
+  });
+};
+SHEETS['rest-add']=()=>openSheet({title:'Add a restaurant',
+  body:`<label>Name</label><input id="sh-n" placeholder="Restaurant name">
+    <label>Location</label><input id="sh-l" placeholder="City / neighborhood">
+    <label>Status</label>
+    <div class="seg"><button type="button" class="on" data-w="rated">Been — rate it</button><button type="button" data-w="want">Reservation</button></div>
+    <div id="ratewrap"><label>Rating</label>${starBox(0)}</div>`,
+  actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+    {label:'Add',handler:(el)=>{
+      const n=el.querySelector('#sh-n').value.trim();if(!n){toast('Needs a name');return false;}
+      const want=el.querySelector('.seg button.on').dataset.w==='want';
+      const rec={id:uid(),name:n,location:el.querySelector('#sh-l').value.trim(),want,rating:want?0:starVal(el)};
+      state.cooking.restaurants.push(rec);
+      if(!want)addLog('cooking','restaurant',{title:n,refId:rec.id});
+      render();toast(want?'Added to reservations':'Restaurant ranked');
+    }}],
+  onMount(el){
+    wireStars(el,0);
+    el.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{
+      el.querySelectorAll('.seg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+      el.querySelector('#ratewrap').classList.toggle('hidden',b.dataset.w==='want');
+    }));
+  }});
+SHEETS['rest-rerate']=(id)=>{
+  const r=state.cooking.restaurants.find(x=>x.id===id);if(!r)return;
+  openSheet({title:`Rate ${r.name}`,body:starBox(r.rating),
+    actions:[{label:'Save',handler:(el)=>{r.rating=starVal(el);save();render();}}],
+    onMount:(el)=>wireStars(el,r.rating)});
+};
+SHEETS['rest-tried']=(id)=>{
+  const r=state.cooking.restaurants.find(x=>x.id===id);if(!r)return;
+  openSheet({title:`How was ${r.name}?`,body:starBox(0),
+    actions:[{label:'Save rating',handler:(el)=>{
+      r.want=false;r.rating=starVal(el);
+      addLog('cooking','restaurant',{title:r.name,refId:r.id});
+      save();render();toast('Moved to your rankings');
+    }}],
+    onMount:(el)=>wireStars(el,0)});
+};
+SHEETS['rest-del']=(id)=>{state.cooking.restaurants=state.cooking.restaurants.filter(x=>x.id!==id);save();render();};
+
+/* ---------- tennis ---------- */
+SHEETS['tennis-log']=()=>openSheet({title:'Log tennis',
+  body:`<label>Minutes played</label><input id="sh-m" type="number" inputmode="numeric" placeholder="e.g. 60">${dateField()}`,
+  actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+    {label:'Log session',handler:(el)=>{
+      const m=Number(el.querySelector('#sh-m').value);
+      if(!m){toast('Enter minutes');return false;}
+      addLog('tennis','session',{minutes:m},shDate(el));render();toast('Session logged 🎾');
+    }}]});
+
+/* ---------- journal ---------- */
+SHEETS['journal-new']=()=>openSheet({title:'New entry',
+  body:`${dateField()}<label>Title</label><input id="sh-t" placeholder="Give today a headline">
+    <label>Entry</label><textarea id="sh-b" rows="7" placeholder="Write freely…"></textarea>`,
+  actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+    {label:'Save entry',handler:(el)=>{
+      const body=el.querySelector('#sh-b').value.trim();
+      const title=el.querySelector('#sh-t').value.trim();
+      if(!body&&!title){toast('Write something first');return false;}
+      addLog('journal','entry',{title,body},shDate(el));render();toast('Entry saved ✍️');
+    }}]});
+SHEETS['journal-view']=(id)=>{
+  const l=state.logs.find(x=>x.id===id);if(!l)return;
+  openSheet({title:l.title||'Untitled',sub:fmtDate(l.date),
+    body:`<label>Title</label><input id="sh-t" value="${esc(l.title||'')}">
+      <label>Entry</label><textarea id="sh-b" rows="8">${esc(l.body||'')}</textarea>`,
+    actions:[
+      {label:'Delete',style:'danger',handler:()=>{delLog(id);render();toast('Entry deleted');}},
+      {label:'Save changes',handler:(el)=>{
+        l.title=el.querySelector('#sh-t').value.trim();
+        l.body=el.querySelector('#sh-b').value;
+        save();render();
+      }}]});
+};
+
+/* ---------- calendar + picker ---------- */
+const QUICK={
+  film:['film-log'],reading:['book-log'],drawing:['draw-add'],music:['album-log'],
+  lifting:['cal-lift'],golf:['golf-round'],skiing:['ski-day'],
+  cooking:['recipe-add','plate-add','rest-add'],tennis:['tennis-log'],journal:['journal-new'],
+};
+const QUICK_LABELS={'film-log':'Movie watched','book-log':'Finished a book','draw-add':'Add a drawing',
+  'album-log':'Album listened','cal-lift':'Workout session','golf-round':'Round of golf','ski-day':'Ski day',
+  'recipe-add':'New recipe','plate-add':'Add a plate','rest-add':'Restaurant','tennis-log':'Tennis session','journal-new':'Journal entry'};
+SHEETS['cal-lift']=()=>{
+  openSheet({title:'Log a workout',sub:'Which day did you train?',
+    body:`<div class="rowlist">${PROGRAM_DAYS.map((d,i)=>`
+      <button class="row" data-day-pick="${i}" style="width:100%;text-align:left"><div class="main"><div class="t">${esc(d.title)}</div></div>${ICONS.chevR.replace('<svg','<svg width="18" height="18" style="color:var(--ink3)"')}</button>`).join('')}
+      ${dateField()}`,
+    onMount(el){
+      el.querySelectorAll('[data-day-pick]').forEach(b=>b.addEventListener('click',()=>{
+        addLog('lifting','workout',{cycle:state.lifting.cycle,day:Number(b.dataset.dayPick),title:PROGRAM_DAYS[b.dataset.dayPick].title},shDate(el));
+        closeSheet();render();toast('Session logged 💪');
+      }));
+    }});
+};
+SHEETS['cal-picker']=()=>{
+  openSheet({title:'Log something',sub:'Which hobby?',
+    body:`<div class="pickgrid">${HOBBIES.filter(h=>h.key!=='fashion').map(h=>`
+      <button data-h="${h.key}"><span class="ic" style="background:${htint(h.key)};color:${hcolor(h.key)}">${ICONS[h.key]}</span><span>${h.name}</span></button>`).join('')}</div>`,
+    onMount(el){
+      el.querySelectorAll('[data-h]').forEach(b=>b.addEventListener('click',()=>{
+        const opts=QUICK[b.dataset.h];
+        if(opts.length===1){closeSheet(true);SHEETS[opts[0]]();return;}
+        openSheet({title:H[b.dataset.h].name,sub:'What do you want to log?',
+          body:`<div class="rowlist">${opts.map(o=>`
+            <button class="row" data-o="${o}" style="width:100%;text-align:left"><div class="main"><div class="t">${QUICK_LABELS[o]}</div></div>${ICONS.chevR.replace('<svg','<svg width="18" height="18" style="color:var(--ink3)"')}</button>`).join('')}</div>`,
+          onMount(el2){
+            el2.querySelectorAll('[data-o]').forEach(x=>x.addEventListener('click',()=>{closeSheet(true);SHEETS[x.dataset.o]();}));
+          }});
+      }));
+    }});
+};
+function pageCalendar(){
+  const y=calMonth.getFullYear(),m=calMonth.getMonth();
+  const first=new Date(y,m,1),startDow=first.getDay(),dim=new Date(y,m+1,0).getDate();
+  const byDate={};
+  state.logs.forEach(l=>{(byDate[l.date]=byDate[l.date]||[]).push(l);});
+  let cells='';
+  for(let i=0;i<startDow;i++)cells+='<div class="cald out"></div>';
+  for(let d=1;d<=dim;d++){
+    const ds=dstr(new Date(y,m,d));
+    const dl=byDate[ds]||[];
+    const hobbies=[...new Set(dl.map(l=>l.hobby))].slice(0,4);
+    cells+=`<button class="cald ${ds===todayStr()?'today':''} ${ds===calSel?'sel':''}" data-day="${ds}">
+      <span class="dnum">${d}</span>
+      <span class="dots">${hobbies.map(h=>`<i style="background:${hcolor(h)}"></i>`).join('')}</span>
+    </button>`;
+  }
+  const sel=byDate[calSel]||[];
+  const selRows=sel.map(l=>`
+    <div class="row">
+      <span class="ic" style="width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;background:${htint(l.hobby)};color:${hcolor(l.hobby)}">${ICONS[l.hobby]}</span>
+      <div class="main"><div class="t">${esc(logLabel(l))}</div><div class="s">${H[l.hobby].name}</div></div>
+      <button class="rowbtn" data-dellog="${l.id}" aria-label="Delete">${ICONS.trash}</button>
+    </div>`).join('');
+  return `
+    <div class="apphead"><div><div class="date">Plan & log</div><h1>Calendar</h1></div></div>
+    <div class="card">
+      <div class="calhead">
+        <h2>${calMonth.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h2>
+        <div class="navs">
+          <button class="iconbtn" data-cal="-1" aria-label="Previous month">${ICONS.chevL}</button>
+          <button class="iconbtn" data-cal="1" aria-label="Next month">${ICONS.chevR}</button>
+        </div>
+      </div>
+      <div class="calgrid">
+        ${['S','M','T','W','T','F','S'].map(d=>`<div class="dow">${d}</div>`).join('')}
+        ${cells}
+      </div>
+    </div>
+    <div class="card"><h2>${calSel===todayStr()?'Today':fmtDate(calSel)}</h2>
+      <div class="rowlist">${selRows||'<div class="empty">Nothing logged — tap + to add</div>'}</div>
+    </div>
+    <button class="fab" data-sheet="cal-picker" aria-label="Log something">${ICONS.plus}</button>`;
+}
+function logLabel(l){
+  if(l.type==='movie')return l.title||'Movie watched';
+  if(l.type==='book')return l.title||'Book finished';
+  if(l.type==='album')return l.title||'Album listened';
+  if(l.type==='drawing')return l.title||'Drawing';
+  if(l.type==='time')return `Drawing time · ${fmtMin(l.minutes||0)}`;
+  if(l.type==='workout')return l.title||'Workout';
+  if(l.type==='round')return `${l.course||'Round'} · ${l.strokes} (${l.vspar>0?'+':''}${l.vspar})`;
+  if(l.type==='skiday')return `${l.resort||'Ski day'}${l.runs?` · ${l.runs} runs`:''}`;
+  if(l.type==='recipe')return `Recipe · ${l.title||''}`;
+  if(l.type==='plate')return `Plate · ${l.title||''}`;
+  if(l.type==='restaurant')return `Ranked ${l.title||'a restaurant'}`;
+  if(l.type==='session')return `Tennis · ${fmtMin(l.minutes||0)}`;
+  if(l.type==='entry')return l.title||'Journal entry';
+  return l.type;
+}
+
+/* ---------- analytics ---------- */
+function weeklySeries(weeks,fn){
+  const values=[],labels=[];
+  const w0=startOfWeek(new Date());
+  for(let i=weeks-1;i>=0;i--){
+    const ws=new Date(w0);ws.setDate(ws.getDate()-7*i);
+    const we=new Date(ws);we.setDate(we.getDate()+7);
+    values.push(fn(ws,we));
+    labels.push(ws.toLocaleDateString(undefined,{month:'numeric',day:'numeric'}));
+  }
+  return {values,labels};
+}
+function weeklyCounts(hobby,weeks,type){
+  return weeklySeries(weeks,(ws,we)=>state.logs.filter(l=>(!hobby||l.hobby===hobby)&&(!type||l.type===type)&&parseD(l.date)>=ws&&parseD(l.date)<we).length);
+}
+function weeklySums(hobby,type,field,weeks){
+  return weeklySeries(weeks,(ws,we)=>state.logs.filter(l=>l.hobby===hobby&&(!type||l.type===type)&&parseD(l.date)>=ws&&parseD(l.date)<we)
+    .reduce((a,l)=>a+(Number(l[field])||0),0));
+}
+function barChart(values,labels,color,opts={}){
+  const W=520,Hh=150,pad=8,axis=20;
+  const max=Math.max(1,...values);
+  const bw=(W-pad*2)/values.length;
+  const maxIdx=values.indexOf(Math.max(...values));
+  let bars='';
+  values.forEach((v,i)=>{
+    const h=v/max*(Hh-pad-axis-16);
+    const x=pad+i*bw+2,y=Hh-axis-h;
+    bars+=`<rect class="bar" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(bw-4).toFixed(1)}" height="${Math.max(h,v?3:1).toFixed(1)}" fill="${v?color:'var(--line)'}" opacity="${v?1:.6}"><title>${labels[i]}: ${v.toLocaleString()}</title></rect>`;
+    if(i===maxIdx&&v>0)bars+=`<text x="${(x+(bw-4)/2).toFixed(1)}" y="${(y-5).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink2)">${v.toLocaleString()}</text>`;
+  });
+  const ticks=labels.map((lb,i)=>(opts.allTicks||i===0||i===labels.length-1)?`<text x="${(pad+i*bw+(bw-4)/2).toFixed(1)}" y="${Hh-5}" text-anchor="middle" font-size="10" fill="var(--ink3)">${lb}</text>`:'').join('');
+  return `<div class="chartwrap"><svg class="chart" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="Bar chart">
+    <line x1="${pad}" y1="${Hh-axis}" x2="${W-pad}" y2="${Hh-axis}" stroke="var(--line)" stroke-width="1"/>
+    ${bars}${ticks}</svg></div>`;
+}
+function pageAnalytics(){
+  const opts=[['total','Totals — all hobbies'],...HOBBIES.filter(h=>h.key!=='fashion').map(h=>[h.key,h.name])];
+  return `
+    <div class="apphead"><div><div class="date">The big picture</div><h1>Analytics</h1></div></div>
+    <div class="card anselect" style="padding:10px 12px;margin-bottom:14px">
+      <select id="an-sel" aria-label="Choose analytics view">${opts.map(([v,n])=>`<option value="${v}" ${anSel===v?'selected':''}>${n}</option>`).join('')}</select>
+    </div>
+    ${anSel==='total'?anTotalHtml():anHobbyHtml(anSel)}`;
+}
+function anTotalHtml(){
+  const per=(days)=>state.logs.filter(l=>inLastDays(l.date,days)).length;
+  const wk=weeklyCounts(null,12);
+  const active=HOBBIES.filter(h=>h.key!=='fashion');
+  const attn=active.map(h=>{
+    const ls=logs(h.key);
+    const last=ls.length?ls.reduce((a,l)=>l.date>a?l.date:a,'0'):null;
+    return {h,days:last?daysBetween(last,todayStr()):null};
+  }).sort((a,b)=>(b.days??9999)-(a.days??9999)).slice(0,5);
+  return `
+    <div class="stats">
+      ${statTile(state.logs.length,'logs all-time')}
+      ${statTile(per(7),'weekly')}
+      ${statTile(per(30),'monthly')}
+      ${statTile(per(90),'past 12 weeks')}
+    </div>
+    <div class="card"><h2>Logs per week · last 12 weeks</h2>${barChart(wk.values,wk.labels,'var(--accent)')}</div>
+    <div class="card"><h2>Falling behind</h2>
+      <div class="attn">${attn.map(({h,days})=>`
+        <div class="arow ${days==null||days>13?'warn':''}">
+          <span class="ic" style="background:${htint(h.key)};color:${hcolor(h.key)}">${ICONS[h.key]}</span>
+          <span class="t">${h.name}</span>
+          <span class="d">${days==null?'never logged':days===0?'today ✓':days+'d ago'}</span>
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+function anHobbyHtml(key){
+  const h=H[key];
+  let tiles='',chartTitle='Logs per week',series=weeklyCounts(key,12);
+  if(key==='film'){
+    tiles=statTile(logs('film','movie').length+off('film.total'),'movies — lifetime')+statTile(countLast('film','movie',30),'past month');
+    chartTitle='Movies per week';series=weeklyCounts('film',12,'movie');
+  }else if(key==='reading'){
+    tiles=statTile(logs('reading','book').length+off('reading.total'),'books — lifetime')+statTile(countLast('reading','book',90),'last 12 weeks');
+    chartTitle='Books per week';series=weeklyCounts('reading',12,'book');
+  }else if(key==='drawing'){
+    tiles=statTile(logs('drawing','drawing').length+off('drawing.count'),'drawings — lifetime')+statTile(countLast('drawing','drawing',30),'past month');
+    chartTitle='Drawings per week';series=weeklyCounts('drawing',12,'drawing');
+  }else if(key==='music'){
+    tiles=statTile(logs('music','album').length+off('music.total'),'albums — lifetime')+statTile(countLast('music','album',7),'past 7 days');
+    chartTitle='Albums per week';series=weeklyCounts('music',12,'album');
+  }else if(key==='lifting'){
+    const wkN=logs('lifting','workout').filter(l=>parseD(l.date)>=startOfWeek(new Date())).length;
+    tiles=statTile(wkN,'lifts this week')+statTile(logs('lifting','workout').length,'sessions all-time')
+      +statTile(state.lifting.cycle,'current microcycle')+statTile(cycleVolume(state.lifting.cycle).toLocaleString(),'current cycle volume');
+    chartTitle='Sessions per week';series=weeklyCounts('lifting',12,'workout');
+  }else if(key==='golf'){
+    const rounds=logs('golf','round');
+    const a=rounds.length?rounds.reduce((x,l)=>x+(Number(l.vspar)||0),0)/rounds.length:null;
+    tiles=statTile(a==null?'—':(a>0?'+':'')+a.toFixed(1),'handicap')+statTile(countLast('golf','round',365),'rounds — past year')+statTile(rounds.length,'rounds all-time');
+    chartTitle='Rounds per week';series=weeklyCounts('golf',12,'round');
+  }else if(key==='skiing'){
+    const all=logs('skiing','skiday');
+    const yr=all.filter(l=>l.date.slice(0,4)===String(new Date().getFullYear()));
+    const runsYr=yr.reduce((a,l)=>a+(Number(l.runs)||0),0);
+    const runsTotal=all.reduce((a,l)=>a+(Number(l.runs)||0),0);
+    tiles=statTile(yr.length,'days this year')+statTile(runsYr,'runs this year')
+      +statTile(runsTotal,'runs — total')+statTile(all.length?(runsTotal/all.length).toFixed(1):'—','runs per ski day');
+    chartTitle='Runs per week';series=weeklySums('skiing','skiday','runs',12);
+  }else if(key==='cooking'){
+    tiles=statTile(state.cooking.recipes.length,'recipes')+statTile(photosOf('plate').length,'plates')
+      +statTile(state.cooking.restaurants.filter(r=>!r.want).length,'restaurants ranked')+statTile(state.cooking.restaurants.filter(r=>r.want).length,'reservations');
+    chartTitle='Cooking logs per week';series=weeklyCounts('cooking',12);
+  }else if(key==='tennis'){
+    const mins=(days)=>logs('tennis','session').filter(l=>days==null||inLastDays(l.date,days)).reduce((a,l)=>a+(Number(l.minutes)||0),0);
+    tiles=statTile(countLast('tennis','session',365),'sessions · year')+statTile(fmtMin(mins(7)),'time · 7 days')+statTile(fmtMin(mins(365)),'time · year');
+    chartTitle='Minutes per week';series=weeklySums('tennis','session','minutes',12);
+  }else if(key==='journal'){
+    tiles=statTile(logs('journal','entry').length,'total entries')+statTile(countLast('journal','entry',30),'past month');
+    chartTitle='Entries per week';series=weeklyCounts('journal',12,'entry');
+  }
+  const cls=(key==='golf'||key==='tennis')?' three':'';
+  return `
+    <div class="stats${cls}">${tiles}</div>
+    <div class="card"><h2>${chartTitle} · last 12 weeks</h2>${barChart(series.values,series.labels,hcolor(key))}</div>`;
+}
+
+/* ---------- page-level delegated clicks & inputs ---------- */
+document.addEventListener('click',e=>{
+  const c=e.target.closest('[data-cyc]');
+  if(c){state.lifting.cycle=Number(c.dataset.cyc);save();render();return;}
+  const cal=e.target.closest('[data-cal]');
+  if(cal){calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()+Number(cal.dataset.cal),1);render();return;}
+  const day=e.target.closest('.cald[data-day]');
+  if(day){calSel=day.dataset.day;render();return;}
+});
+document.addEventListener('change',e=>{
+  if(e.target&&e.target.id==='an-sel'){anSel=e.target.value;render();window.scrollTo(0,0);}
+});
+
+/* ---------- boot ---------- */
+try{ if(navigator.storage&&navigator.storage.persist)navigator.storage.persist(); }catch(e){}
+window.addEventListener('pagehide',()=>{try{save();}catch(e){}});
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden'){try{save();}catch(e){}} });
+render();
+photosInit().then(()=>{
+  render();
+  if(state.logs.length>10&&(!state.lastBackup||daysBetween(state.lastBackup,todayStr())>14)){
+    setTimeout(()=>toast('Tip: back up your data in Settings'),1200);
+  }
+});
+</script>
+<script>
+'use strict';
+/* ============================================================
+   PWA layer — service worker, real file downloads, storage health
+   Loaded only in the self-hosted build.
+   ============================================================ */
+
+const APP_VERSION='2026.08.23-1';
+
+/* ---------- service worker (offline launch + updates) ---------- */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+
+/* ---------- real file download (replaces the artifact clipboard fallback) ---------- */
+async function exportBackup(){
+  const payload=JSON.stringify({app:'life-dashboard',v:2,exported:todayStr(),state,photos:[...photoCache.values()]});
+  const name=`life-dashboard-backup-${todayStr()}.json`;
+  try{
+    const blob=new Blob([payload],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=name; a.rel='noopener';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
+    state.lastBackup=todayStr(); save(); render();
+    toast('Backup saved to Files');
+    return;
+  }catch(e){}
+  openSheet({title:'Backup data',sub:'Copy this and save it somewhere safe. Paste it back under “Import backup” to restore.',
+    body:`<textarea id="bk-txt" rows="6" readonly style="font-size:11px">${esc(payload)}</textarea>`,
+    actions:[{label:'Copy to clipboard',handler:async(el)=>{
+      try{await navigator.clipboard.writeText(payload);}catch(e2){el.querySelector('#bk-txt').select();document.execCommand('copy');}
+      state.lastBackup=todayStr();save();render();toast('Copied');
+    }}]});
+}
+
+/* ---------- settings, with storage health + version ---------- */
+SHEETS['settings']=()=>{
+  const installed=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+  openSheet({
+    title:'Settings & backup',
+    body:`
+      <p class="sub">Your data is stored on this phone. Export a backup now and then — it’s your safety net.</p>
+      ${state.lastBackup?`<p class="note">Last backup: ${fmtDate(state.lastBackup)}</p>`:'<p class="note" style="color:var(--danger)">No backup yet.</p>'}
+      <div class="actions" style="margin-top:8px">
+        <button class="btn" id="bk-exp">Export backup</button>
+        <button class="btn quiet" id="bk-imp">Import backup</button>
+      </div>
+      <hr class="hr">
+      <h2 style="font-size:14px">Storage health</h2>
+      <div class="rowlist" style="margin-top:2px">
+        <div class="row"><div class="main"><div class="t">Installed to Home Screen</div>
+          <div class="s">${installed?'Yes — data is protected from cleanup':'Not yet — open from your Home Screen icon'}</div></div>
+          <span class="num">${installed?'✓':'—'}</span></div>
+        <div class="row"><div class="main"><div class="t">Persistent storage</div>
+          <div class="s" id="st-persist">checking…</div></div><span class="num" id="st-persist-i">…</span></div>
+        <div class="row"><div class="main"><div class="t">Space used</div>
+          <div class="s" id="st-space">checking…</div></div></div>
+        <div class="row"><div class="main"><div class="t">Offline ready</div>
+          <div class="s">${'serviceWorker' in navigator?'Yes — opens without a signal':'Not supported in this browser'}</div></div>
+          <span class="num">${'serviceWorker' in navigator?'✓':'—'}</span></div>
+      </div>
+      <hr class="hr">
+      <button class="btn danger" id="bk-reset">Erase all data</button>
+      <p class="note">Version ${APP_VERSION} · Always open Life Dashboard from its Home Screen icon — Safari tabs and in-app browsers keep separate copies of your data.</p>`,
+    onMount(el){
+      el.querySelector('#bk-exp').addEventListener('click',exportBackup);
+      el.querySelector('#bk-imp').addEventListener('click',importBackup);
+      el.querySelector('#bk-reset').addEventListener('click',()=>{
+        openSheet({title:'Erase everything?',sub:'This deletes all logs, lists, and photos on this device. A backup file is the only way back.',
+          actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+                   {label:'Erase all data',style:'danger',handler:()=>{
+                      state=defaultState();save();
+                      [...photoCache.keys()].forEach(photoDelete);
+                      render();toast('Erased');}}]});
+      });
+      (async()=>{
+        try{
+          if(navigator.storage&&navigator.storage.persisted){
+            let ok=await navigator.storage.persisted();
+            if(!ok&&navigator.storage.persist)ok=await navigator.storage.persist();
+            const t=el.querySelector('#st-persist'),i=el.querySelector('#st-persist-i');
+            if(t){t.textContent=ok?'Granted — iOS won’t evict your logs':'Not granted — keep exporting backups';}
+            if(i){i.textContent=ok?'✓':'!';i.style.color=ok?'':'var(--danger)';}
+          }else{
+            const t=el.querySelector('#st-persist');if(t)t.textContent='Not supported in this browser';
+          }
+          if(navigator.storage&&navigator.storage.estimate){
+            const {usage}=await navigator.storage.estimate();
+            const s=el.querySelector('#st-space');
+            if(s)s.textContent=(usage/1048576).toFixed(1)+' MB used (photos included)';
+          }
+        }catch(e){}
+      })();
+    },
+  });
+};
+</script>
+</body>
+</html>
