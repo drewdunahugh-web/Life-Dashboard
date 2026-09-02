@@ -428,6 +428,63 @@ label{display:block;font-size:13px;font-weight:600;color:var(--ink2);margin:12px
 .dayvol{text-align:right;font-weight:800;margin-top:8px;font-variant-numeric:tabular-nums;font-size:13px;color:var(--ink2)}
 .hr{height:1px;background:var(--line);margin:14px 0;border:none}
 .hidden{display:none!important}
+
+/* ---------- header action row: themes · alerts · settings ---------- */
+.headbtns{display:flex;gap:8px;flex:none;align-items:center}
+.headbtns .iconbtn{position:relative;width:42px;height:42px}
+.headbtns .iconbtn svg{width:21px;height:21px}
+.headbtns .dotbadge{
+  position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;
+  background:var(--danger);color:#fff;font-size:10.5px;font-weight:800;line-height:18px;text-align:center;
+  box-shadow:0 0 0 2px var(--bg);font-variant-numeric:tabular-nums;
+}
+
+/* ---------- in-app notification bar ---------- */
+#notifhost{position:fixed;left:0;right:0;top:0;z-index:90;display:flex;justify-content:center;
+  padding:calc(env(safe-area-inset-top) + 8px) 10px 0;pointer-events:none}
+.notifbar{
+  width:100%;max-width:540px;background:var(--surface);border-radius:16px;
+  box-shadow:0 2px 6px rgba(0,0,0,.14),0 12px 34px rgba(0,0,0,.22);
+  border:1px solid var(--line);overflow:hidden;pointer-events:auto;
+  transform:translateY(-130%);transition:transform .28s cubic-bezier(.25,.9,.35,1),opacity .2s ease;
+}
+.notifbar.show{transform:translateY(0)}
+.notifbar .nb-in{display:flex;align-items:flex-start;gap:11px;padding:12px 12px 13px}
+.notifbar .nb-ic{width:36px;height:36px;border-radius:11px;flex:none;display:flex;align-items:center;justify-content:center}
+.notifbar .nb-ic svg{width:19px;height:19px}
+.notifbar .nb-tx{flex:1;min-width:0}
+.notifbar .nb-t{font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.25}
+.notifbar .nb-b{font-size:13px;color:var(--ink2);line-height:1.4;margin-top:2px;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.notifbar .nb-x{flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;color:var(--ink3);margin:-2px -2px 0 0}
+.notifbar .nb-x svg{width:15px;height:15px}
+.notifbar .nb-timer{height:3px;background:var(--line)}
+.notifbar .nb-timer i{display:block;height:100%;background:var(--accent);width:100%;transform-origin:left center}
+.notifbar.run .nb-timer i{animation:nbcount 5s linear forwards}
+@keyframes nbcount{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@media (prefers-reduced-motion: reduce){
+  .notifbar{transition:none}
+  .notifbar.run .nb-timer i{animation:none;transform:scaleX(0)}
+}
+
+/* ---------- notification centre ---------- */
+.nrow{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line);align-items:flex-start;width:100%;text-align:left}
+.nrow:last-child{border-bottom:none}
+.nrow .nic{width:32px;height:32px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center}
+.nrow .nic svg{width:17px;height:17px}
+.nrow .nmain{flex:1;min-width:0}
+.nrow .nt{font-size:14px;font-weight:700;color:var(--ink)}
+.nrow .nb{font-size:12.5px;color:var(--ink2);line-height:1.4;margin-top:1px}
+.nrow .nw{font-size:11px;color:var(--ink3);font-weight:600;margin-top:3px}
+.nrow.unread .nt::after{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:var(--accent);margin-left:6px;vertical-align:middle}
+
+/* ---------- reminders on the calendar ---------- */
+.remrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.remrow:last-child{border-bottom:none}
+.remrow.done .t{text-decoration:line-through;color:var(--ink2)}
+.cald .dots i.rem{width:5px;height:5px;border-radius:1px;transform:rotate(45deg)}
 .fieldrow{display:flex;gap:8px}
 .fieldrow>div{flex:1}
 </style>
@@ -478,6 +535,8 @@ const ICONS={
   star:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.7 5.9 6.4.7-4.8 4.4 1.3 6.3L12 17l-5.6 3.1 1.3-6.3-4.8-4.4 6.4-.7z"/></svg>`,
   pin:`<svg viewBox="0 0 24 24" ${SW}><path d="M9.5 3.5h5l-.8 6 3.3 3.5H7l3.3-3.5-.8-6zM12 13v7.5"/></svg>`,
   search:`<svg viewBox="0 0 24 24" ${SW}><circle cx="11" cy="11" r="6.5"/><path d="M15.8 15.8L20.5 20.5"/></svg>`,
+  close:`<svg viewBox="0 0 24 24" ${SW} stroke-width="2.2"><path d="M6 6l12 12M18 6L6 18"/></svg>`,
+  palette:`<svg viewBox="0 0 24 24" ${SW}><path d="M12 3.5a8.5 8.5 0 0 0 0 17c1.2 0 1.8-.8 1.8-1.6 0-1.5-1.2-1.6-1.2-2.6 0-.8.7-1.4 1.6-1.4h1.4A4.9 4.9 0 0 0 20.5 10c0-3.6-3.8-6.5-8.5-6.5z"/><circle cx="8" cy="11" r="1.1" fill="currentColor" stroke="none"/><circle cx="11.5" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="9" r="1.1" fill="currentColor" stroke="none"/></svg>`,
   folder:`<svg viewBox="0 0 24 24" ${SW}><path d="M3.5 7.5a2 2 0 0 1 2-2h3.2l2 2.2h7.8a2 2 0 0 1 2 2v8.3a2 2 0 0 1-2 2H5.5a2 2 0 0 1-2-2z"/></svg>`,
   disc:`<svg viewBox="0 0 24 24" ${SW}><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.2"/></svg>`,
   bell:`<svg viewBox="0 0 24 24" ${SW}><path d="M6.5 10a5.5 5.5 0 0 1 11 0c0 4 1.5 5.5 1.5 5.5H5S6.5 14 6.5 10z"/><path d="M10.2 19a2 2 0 0 0 3.6 0"/></svg>`,
@@ -535,14 +594,17 @@ const N_CYCLES=16;
 
 /* ---------- 16-week protocol constants ---------- */
 const PROTO={
-  weeks:16, startWeight:165, targetLo:153, targetHi:156, floor:153,
-  kcal:2300, protein:165, fat:66, carbs:262, water:3,
+  weeks:16, cutWeeks:10,
+  startWeight:161, leanMass:137, targetLo:152, targetHi:154, floor:152, rate:0.9,
+  cut:{kcal:2300, protein:165, fat:66, carbs:262},
+  maint:{kcal:2750, protein:165, fat:75, carbs:354},
+  water:3,
   trainDays:'Mon · Tue · Thu · Fri',
   checkpoints:[4,8,12,16],
   alcohol:{dryWeeks:4, perWeek:6, perSession:3, daysPerWeek:2},
 };
 const DAILY_ITEMS=[
-  {k:'kcal',    t:'2,300 kcal hit'},
+  {k:'kcal',    t:'Calories on target'},
   {k:'supps',   t:'Supplements — creatine + omega-3'},
   {k:'water',   t:'3 L water'},
 ];
@@ -550,7 +612,6 @@ const SETUP_ITEMS=[
   {k:'spot',  t:'Pick a photo spot — one wall, artificial light, mark your feet'},
   {k:'photos',t:'Take week-0 photos — front / side / back, relaxed and flexed'},
   {k:'waist', t:'Measure starting waist at the navel'},
-  {k:'cols',  t:'Add Reps, RIR and Waist columns to the tracking sheet'},
 ];
 
 /* ---------- state ---------- */
@@ -569,8 +630,10 @@ function defaultState(){
     cooking:{recipes:[],restaurants:[]},
     closet:{items:[],wishlist:[]},
     drawingAlbums:[],
-    notify:{enabled:false,cadence:true,daily:true,sunday:true,checkpoints:true,sent:{}},
+    notify:{enabled:false,cadence:true,daily:true,sunday:true,checkpoints:true,reminders:true,sent:{}},
     theme:'sunset', themeRotate:'off', themeRotateAt:0,
+    reminders:[],   // {id,hobby,date,note,done}
+    notifLog:[],    // {id,ts,kind,hobby,title,body,page,read}
     seeded:{},
     lastBackup:null,
   };
@@ -840,6 +903,7 @@ function rteAutoFormat(body){
 function richVal(el,id){const b=el.querySelector('#'+id);return b?safeHtml(b.innerHTML):'';}
 
 /* ---------- sheet ---------- */
+const SHEETS={};   /* every add/edit flow registers itself here */
 let sheetEl=null;
 function openSheet({title,sub,body,actions,onMount}){
   closeSheet(true);
@@ -896,6 +960,72 @@ const SEED_FILMS=[
   ['The Big Lebowski',3.5],['Fargo',3.5],['Memories of Underdevelopment',3],['Bonnie and Clyde',4],
   ['Tokyo Drifter',4],['Cleo from 5 to 7',4.5],
 ];
+/* year + director for the films already logged, matched on a loose title */
+const normTitle=s=>String(s||'').toLowerCase().normalize('NFD')
+  .replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+const FILM_META={
+  'the death of robin hood':[2026,'Michael Sarnoski'],
+  'the elixir':[2025,'Kimo Stamboel'],
+  'warfare':[2025,'Alex Garland & Ray Mendoza'],
+  'another round':[2020,'Thomas Vinterberg'],
+  '500 days of summer':[2009,'Marc Webb'],
+  'city of god':[2002,'Fernando Meirelles & Kátia Lund'],
+  'in the mood for love':[2000,'Wong Kar-wai'],
+  'fight club':[1999,'David Fincher'],
+  'the big lebowski':[1998,'Coen Brothers'],
+  'fargo':[1996,'Coen Brothers'],
+  'memories of underdevelopment':[1968,'Tomás Gutiérrez Alea'],
+  'bonnie and clyde':[1967,'Arthur Penn'],
+  'tokyo drifter':[1966,'Seijun Suzuki'],
+  'cleo from 5 to 7':[1962,'Agnès Varda'],
+};
+const SEED_WATCHLIST=[
+  ['The Dog Stars',2026,'Ridley Scott'],
+  ['Project Hail Mary',2026,'Phil Lord & Christopher Miller'],
+  ['The Odyssey',2026,'Christopher Nolan'],
+  ['Backrooms',2026,'Kane Parsons'],
+  ['Obsession',2026,'Curry Barker'],
+  ['Chainsaw Man – The Movie: Reze Arc',2025,'Tatsuya Yoshihara'],
+  ['Dune: Part Two',2024,'Denis Villeneuve'],
+  ['Dune',2021,'Denis Villeneuve'],
+  ['The Hateful Eight',2015,'Quentin Tarantino'],
+  ['Django Unchained',2012,'Quentin Tarantino'],
+  ['A Hidden Life',2019,'Terrence Malick'],
+  ['The Tree of Life',2011,'Terrence Malick'],
+  ['Knight of Cups',2015,'Terrence Malick'],
+  ['Days of Heaven',1978,'Terrence Malick'],
+  ['Badlands',1973,'Terrence Malick'],
+  ['Ghost in the Shell',1995,'Mamoru Oshii'],
+  ['Ghost in the Shell 2: Innocence',2004,'Mamoru Oshii'],
+  ['Bleeder',1999,'Nicolas Winding Refn'],
+  ['Beautiful Boy',2018,'Felix Van Groeningen'],
+  ['La La Land',2016,'Damien Chazelle'],
+  ['Memories of Murder',2003,'Bong Joon-ho'],
+  ['Waves',2019,'Trey Edward Shults'],
+  ['Perfect Days',2023,'Wim Wenders'],
+  ['Sorry to Bother You',2018,'Boots Riley'],
+  ['Le Bonheur',1965,'Agnès Varda'],
+  ['The Battle of Algiers',1966,'Gillo Pontecorvo'],
+  ['Lady Snowblood',1973,'Toshiya Fujita'],
+  ['La Haine',1995,'Mathieu Kassovitz'],
+  ['Vagabond',1985,'Agnès Varda'],
+  ['Illusions',1982,'Julie Dash'],
+  ['Killer of Sheep',1978,'Charles Burnett'],
+  ['Spirited Away',2001,'Hayao Miyazaki'],
+  ['Moonlight',2016,'Barry Jenkins'],
+  ['Citizen Kane',1941,'Orson Welles'],
+  ['Funeral Parade of Roses',1969,'Toshio Matsumoto'],
+  ['Rebel Without a Cause',1955,'Nicholas Ray'],
+  ['Lost in Translation',2003,'Sofia Coppola'],
+  ['Dangerously Yours',1933,'Frank Tuttle'],
+  ['5 Centimeters Per Second',2007,'Makoto Shinkai'],
+  ['Whiplash',2014,'Damien Chazelle'],
+  ['Parasite',2019,'Bong Joon-ho'],
+  ['Interstellar',2014,'Christopher Nolan'],
+  ['Fallen Angels',1995,'Wong Kar-wai'],
+  ['All About Lily Chou-Chou',2001,'Shunji Iwai'],
+  ['Stand By Me',1986,'Rob Reiner'],
+];
 const SEED_RESTAURANTS_RATED=[
   ['Kinboshi Ramen',4.5],['Ramen Ryoma',3.5],['Luc Lac',3],['Ladda Thai House',4],
   ['Nongs Khao Man Gai',3],['San Sai Japanese Grill',4.5],['Hachi',4],['Excellent Cusine',4.5],
@@ -922,6 +1052,35 @@ const SEED_RECIPES=[
   {title:'Shoyu Ramen',yield:'4',
    ingredients:'<b>Broth</b><ul><li>6 Cups / 1.5 Liters, Chicken Stock</li><li>0.25 Cups / 60g, Soy sauce</li><li>4 Shiitake Mushrooms, sliced</li><li>2 Green Onions (whites), sliced</li><li>2 Cloves, Garlic, crushed</li><li>1 Inch, Ginger, grated</li></ul><b>Glazed Chicken</b><ul><li>2T / 30g, Soy Sauce</li><li>1T / 18g, Honey</li><li>2t / 12g, Corn Syrup</li><li>1 Clove, Garlic, minced</li></ul><b>Toppings</b><ul><li>Kelp Noodles</li><li>Shiitake Mushrooms</li><li>Green Onions</li><li>Soft Boiled Egg</li><li>Glazed Chicken</li><li>Sesame Oil</li><li>Chili Paste</li></ul>',
    steps:'<b>Broth</b><ul><li>Sauté mushrooms and set aside</li><li>Sauté green onions, garlic, and ginger until fragrant</li><li>Add stock and soy sauce</li><li>Boil then simmer for 5–10 minutes</li><li>Add salt</li></ul>'},
+];
+const SEED_RECIPES2=[
+  {title:'Le Mistral',yield:'1',
+   note:'Chef Mitchell Randall of Ostra',
+   ingredients:'<ul><li>6oz, Steak, Sliced</li><li>Ciabatta Bread</li><li>Arugula</li><li>Truffle Oil</li><li>Munster cheese</li><li>0.5, Onion, Sliced</li><li>1 T, Butter</li><li>2 T, Butter</li><li>Heavy Cream</li><li>0.5, Russet Potato, Peeled</li><li>0.25 C, Crispy Onion</li></ul>',
+   steps:'<ul><li>Boil potato</li><li>Caramelize onion in butter</li></ul>'},
+  {title:'Mizithra Butter Noodles',yield:'1',calories:'550',
+   ingredients:'<ul><li>4oz, Spaghetti</li><li>3 T, Butter</li><li>2oz, Mizithra, Grated</li></ul>',
+   steps:'<b>Variations</b><ul><li>Sub mizithra with dill and add 4oz white fish (+100 cal)</li></ul>'},
+  {title:'Calzone',yield:'4',
+   ingredients:'<b>Dough</b><ul><li>700g, "00" Flour</li><li>14g, Fine Sea Salt</li><li>410g, Warm Water (95°)</li><li>0.75g, Instant Yeast</li></ul>'+
+     '<b>Sauce</b><ul><li>3.5 T, Olive Oil, medium heat</li><li>4 Cloves, Garlic, Minced</li><li>1 t, Crushed Red Chili Flakes</li><li>28oz, Crushed San Marzano Tomatoes</li><li>Pinch, Sugar</li></ul>'+
+     '<b>Fillings</b><ul><li>1, Sweet Onion, Diced</li><li>2, Red Peppers, Diced</li><li>Mozzarella</li><li>Pepperoni</li><li>Sausage</li></ul>',
+   steps:'<b>Dough</b><ul><li>Cover and rise for 18–24 hours at room temperature</li><li>Divide into 4s and shape into balls</li><li>Place on baking sheet, cover, and proof for 4 hours</li></ul>'+
+     '<b>Sauce</b><ul><li>Toast garlic (1–2 minutes)</li><li>Toast chilis (20 seconds)</li><li>Add tomatoes and sugar</li><li>Bring to a simmer then reduce the heat to low and reduce for 8 minutes</li></ul>'+
+     '<b>Fillings</b><ul><li>Sauté</li></ul>'+
+     '<b>Bake</b><ul><li>Add pizza stone to oven</li><li>Set oven to max temperature (around 500°)</li><li>Preheat for at least 45 minutes</li><li>Roll out dough to a disk about 1/3 inch thick</li><li>Add fillings (don’t over stuff)</li><li>Fold over, pinch, fold over to make a lip to fully seal, then brush with oil</li><li>Bake for 8–12 minutes</li></ul>'},
+  {title:'Jim Johnson Shrimp Ceviche',
+   note:'10/15/10 apx. I had ceviche at Yesenia’s on S.E. Powell. I copied the ingredients that I saw and tasted in their ceviche.',
+   ingredients:'<ul><li>Lime juice</li><li>Salad shrimp</li><li>Yellow onion</li><li>Avocado (squish some pieces to make the flavor of the lime juice better)</li><li>Jalapeño pepper — smaller pieces if the pepper is very hot</li><li>Cilantro</li><li>Diced tomato (outside area). I use cherub cherry tomatoes quartered.</li><li>Garlic, use garlic press</li><li>Sea salt</li></ul>',
+   steps:'<ul><li>Serve with corn chips on the side</li></ul>'},
+  {title:'Crepes',yield:'2',
+   ingredients:'<b>Batter</b><ul><li>1 C / 150g AP Flour</li><li>1.5 T / 25g Granulated Sugar</li><li>2 Eggs</li><li>1 Egg Yolk</li><li>1 T Vegetable Oil</li><li>1 C / 240mL Milk</li></ul>'+
+     '<b>Mornay</b><ul><li>2 T Butter</li><li>2 T AP Flour</li><li>1.25 C / 275mL Milk</li><li>0.5 C Gruyère Cheese, Grated</li><li>Salt + Nutmeg</li></ul>'+
+     '<b>Assembly</b><ul><li>1–3 Slices of Prosciutto</li><li>Mornay</li><li>Gruyère Cheese, Grated</li><li>1 Egg</li><li>Olive Oil</li></ul>'+
+     '<b>Garnish</b><ul><li>Small handful of Parsley, Chopped</li><li>3 Cloves Garlic, Minced</li><li>1 Lemon, Zested</li></ul>',
+   steps:'<b>Batter</b><ul><li>Whisk the eggs</li><li>Slowly whisk in oil and milk</li><li>Strain (optional)</li><li>Cook 1/3 cup at a time on a greased nonstick pan on medium heat until the top is dry</li><li>Cook another 15 seconds after flipping</li></ul>'+
+     '<b>Mornay</b><ul><li>Melt butter then mix in flour</li><li>Whisk in milk until hot and thickened</li><li>Whisk in cheese then season</li></ul>'+
+     '<b>Savory crepe</b><ul><li>Fold in the sides and drizzle in olive oil</li><li>Bake at 350° for 7–10 minutes</li><li>Garnish</li></ul>'},
 ];
 function runSeeds(){
   let changed=false;
@@ -951,6 +1110,34 @@ function runSeeds(){
         protein:'',carbs:'',fat:'',ingredients:r.ingredients,steps:r.steps,date:todayStr(),imported:true});
     });
     state.seeded.recipes=true; changed=true;
+  }
+  // year + director onto the films already logged, then the watchlist
+  if(!state.seeded.filmMeta){
+    logs('film','movie').forEach(l=>{
+      const m=FILM_META[normTitle(l.title)];
+      if(!m)return;
+      if(!l.year)l.year=m[0];
+      if(!l.director)l.director=m[1];
+    });
+    state.seeded.filmMeta=true; changed=true;
+  }
+  if(!state.seeded.watchlist){
+    SEED_WATCHLIST.forEach(([title,year,director])=>{
+      const n=normTitle(title);
+      if(state.film.watchlist.some(w=>normTitle(w.title)===n))return;
+      if(logs('film','movie').some(l=>normTitle(l.title)===n))return;
+      state.film.watchlist.push({id:uid(),title,year,director});
+    });
+    state.seeded.watchlist=true; changed=true;
+  }
+  if(!state.seeded.recipes2){
+    SEED_RECIPES2.forEach(r=>{
+      if(has(state.cooking.recipes,r.title))return;
+      state.cooking.recipes.push({id:uid(),title:r.title,yield:r.yield||'',
+        calories:r.calories||'',price:'',protein:'',carbs:'',fat:'',
+        note:r.note||'',ingredients:r.ingredients,steps:r.steps,date:todayStr(),imported:true});
+    });
+    state.seeded.recipes2=true; changed=true;
   }
   // Redtail Golf Center — par card straight off Drew's sheet, front 36 / back 36
   if(!state.seeded.redtail){
@@ -1397,6 +1584,170 @@ document.addEventListener('visibilitychange',()=>{
   if(!ROTATIONS.some(r=>r.id===state.themeRotate))state.themeRotate='off';
 })();
 </script>
+<div id="notifhost"></div>
+<script>
+'use strict';
+/* ============================================================
+   Notifications — one queue, an in-app bar, and a centre
+   ============================================================ */
+
+const NOTIF_KINDS={
+  cadence:    {icon:'chart',  label:'Cadence'},
+  daily:      {icon:'lifting',label:'Daily tasks'},
+  sunday:     {icon:'scale',  label:'Sunday'},
+  checkpoint: {icon:'camera', label:'Checkpoint'},
+  reminder:   {icon:'bell',   label:'Reminder'},
+};
+const NOTIF_HOLD=5000;
+
+/* every notification lands here first: logged, then queued for the bar */
+function pushNotif({kind,hobby,title,body,page}){
+  const n={id:uid(),ts:Date.now(),kind:kind||'reminder',hobby:hobby||null,
+           title:title||'',body:body||'',page:page||null,read:false};
+  state.notifLog.unshift(n);
+  if(state.notifLog.length>120)state.notifLog.length=120;
+  save();
+  notifQueue.push(n);
+  if(!notifShowing)nextNotif();
+  fireNotification(n.title,n.body);   // the OS one, when permission allows
+  return n;
+}
+let notifQueue=[], notifShowing=null, notifTimer=null;
+
+function unreadNotifs(){return state.notifLog.filter(n=>!n.read).length;}
+function notifIcon(n){
+  if(n.hobby&&ICONS[n.hobby])return ICONS[n.hobby];
+  const k=NOTIF_KINDS[n.kind];
+  return ICONS[(k&&k.icon)||'bell']||ICONS.bell;
+}
+function notifTint(n){return n.hobby?htint(n.hobby):'var(--surface2)';}
+function notifColor(n){return n.hobby?hcolor(n.hobby):'var(--accent)';}
+
+function nextNotif(){
+  const host=$('#notifhost');
+  if(!host)return;
+  if(!notifQueue.length){ notifShowing=null; host.innerHTML=''; return; }
+  const n=notifQueue.shift();
+  notifShowing=n;
+  host.innerHTML=`<div class="notifbar" role="status">
+    <div class="nb-in">
+      <span class="nb-ic" style="background:${notifTint(n)};color:${notifColor(n)}">${notifIcon(n)}</span>
+      <span class="nb-tx" data-nb-open>
+        <span class="nb-t">${esc(n.title)}</span>
+        <span class="nb-b">${esc(n.body)}</span>
+      </span>
+      <button class="nb-x" data-nb-close aria-label="Dismiss">${ICONS.close}</button>
+    </div>
+    <div class="nb-timer"><i></i></div>
+  </div>`;
+  const bar=host.querySelector('.notifbar');
+  const dismiss=(opened)=>{
+    clearTimeout(notifTimer); notifTimer=null;
+    bar.classList.remove('show');
+    const rec=state.notifLog.find(x=>x.id===n.id);
+    if(rec&&opened){rec.read=true;save();}
+    setTimeout(()=>{ notifShowing=null; nextNotif(); if(opened)render(); },260);
+  };
+  bar.querySelector('[data-nb-close]').addEventListener('click',e=>{e.stopPropagation();dismiss(false);});
+  bar.querySelector('[data-nb-open]').addEventListener('click',()=>{
+    const rec=state.notifLog.find(x=>x.id===n.id);
+    if(rec){rec.read=true;save();}
+    openNotifTarget(n);
+    dismiss(true);
+  });
+  requestAnimationFrame(()=>{ bar.classList.add('show'); bar.classList.add('run'); });
+  notifTimer=setTimeout(()=>dismiss(false),NOTIF_HOLD);
+}
+/* where a notification takes you when tapped */
+function openNotifTarget(n){
+  closeSheet(true);
+  if(n.page&&PAGES[n.page]){ viewStack.length=0; view={tab:'dash',page:n.page}; }
+  else if(n.hobby&&PAGES[n.hobby]){ viewStack.length=0; view={tab:'dash',page:n.hobby}; }
+  else if(n.kind==='cadence'){ viewStack.length=0; view={tab:'stats',page:null}; }
+  else if(n.kind==='reminder'){ viewStack.length=0; view={tab:'cal',page:null}; }
+  else { viewStack.length=0; view={tab:'dash',page:'lifting'}; }
+  window.scrollTo(0,0);
+}
+function relTime(ts){
+  const mins=Math.round((Date.now()-ts)/60000);
+  if(mins<1)return 'just now';
+  if(mins<60)return mins+'m ago';
+  const h=Math.round(mins/60);
+  if(h<24)return h+'h ago';
+  const d=Math.round(h/24);
+  return d===1?'yesterday':d+'d ago';
+}
+
+/* ---------- notification centre ---------- */
+SHEETS['notif-center']=()=>{
+  const list=state.notifLog;
+  const rows=list.length?list.slice(0,40).map(n=>`
+    <button class="nrow ${n.read?'':'unread'}" data-nopen="${n.id}">
+      <span class="nic" style="background:${notifTint(n)};color:${notifColor(n)}">${notifIcon(n)}</span>
+      <span class="nmain">
+        <span class="nt">${esc(n.title)}</span>
+        <span class="nb">${esc(n.body)}</span>
+        <span class="nw">${(NOTIF_KINDS[n.kind]||{}).label||''} · ${relTime(n.ts)}</span>
+      </span>
+    </button>`).join(''):'<div class="empty">Nothing yet — nudges land here</div>';
+
+  const perm=(typeof Notification!=='undefined')?Notification.permission:'unsupported';
+  const row=(k,title,desc)=>`<div class="switchrow">
+    <div class="main"><div style="font-weight:700;font-size:14.5px">${title}</div>
+      <div class="s" style="font-size:12.5px;color:var(--ink2)">${desc}</div></div>
+    <span class="switch ${state.notify[k]!==false?'on':''}" data-ntoggle="${k}"><i></i></span></div>`;
+
+  openSheet({title:'Notifications',
+    body:`<div class="seg" id="nseg">
+        <button class="on" data-nt="feed">Recent</button>
+        <button data-nt="set">Settings</button>
+      </div>
+      <div id="nfeed">
+        ${list.length?`<div style="display:flex;justify-content:flex-end;margin-bottom:2px">
+          <button class="btn line sm" id="n-clear" style="width:auto;padding:6px 12px">Clear all</button></div>`:''}
+        <div class="rowlist">${rows}</div>
+      </div>
+      <div id="nset" class="hidden">
+        <div class="switchrow">
+          <span style="color:var(--ink2);display:flex">${ICONS.bell}</span>
+          <div class="main"><div style="font-weight:700;font-size:14.5px">Notifications</div>
+            <div class="s" style="font-size:12.5px;color:var(--ink2)">${state.notify.enabled?(perm==='granted'?'On — also shown on your lock screen':'On in-app'):'Off'}</div></div>
+          <span class="switch ${state.notify.enabled?'on':''}" id="notif-main"><i></i></span></div>
+        <hr class="hr">
+        ${row('reminders','Calendar reminders','When something you scheduled comes due')}
+        ${row('cadence','Hobby cadence','When a hobby drops below its range — or runs ahead of it')}
+        ${row('daily','Daily tasks','When yesterday’s checklist was left unfinished')}
+        ${row('sunday','Sunday tasks','Waist measurement and the week’s weight average')}
+        ${row('checkpoints','Checkpoints','Weeks 4, 8, 12 and 16')}
+      </div>`,
+    onMount(el){
+      el.querySelectorAll('#nseg button').forEach(b=>b.addEventListener('click',()=>{
+        el.querySelectorAll('#nseg button').forEach(x=>x.classList.toggle('on',x===b));
+        el.querySelector('#nfeed').classList.toggle('hidden',b.dataset.nt!=='feed');
+        el.querySelector('#nset').classList.toggle('hidden',b.dataset.nt!=='set');
+      }));
+      el.querySelectorAll('[data-nopen]').forEach(b=>b.addEventListener('click',()=>{
+        const n=state.notifLog.find(x=>x.id===b.dataset.nopen); if(!n)return;
+        n.read=true; save(); closeSheet(true); openNotifTarget(n); render();
+      }));
+      const clr=el.querySelector('#n-clear');
+      if(clr)clr.addEventListener('click',()=>{state.notifLog=[];save();closeSheet(true);SHEETS['notif-center']();render();});
+      const main=el.querySelector('#notif-main');
+      main.addEventListener('click',function(){
+        if(state.notify.enabled){state.notify.enabled=false;save();this.classList.remove('on');render();}
+        else enableNotifications().then(()=>{this.classList.add('on');checkCadence();render();});
+      });
+      el.querySelectorAll('[data-ntoggle]').forEach(s=>s.addEventListener('click',function(){
+        const k=this.dataset.ntoggle;
+        state.notify[k]=state.notify[k]===false;
+        this.classList.toggle('on',state.notify[k]!==false);
+        save();
+      }));
+      // mark everything seen once the centre has been opened
+      setTimeout(()=>{state.notifLog.forEach(n=>n.read=true);save();},900);
+    }});
+};
+</script>
 <script>
 'use strict';
 /* ============================================================
@@ -1547,8 +1898,9 @@ function linkBtn(href,label,colorKey,iconKey){
     <span class="lg" style="background:${htint(colorKey)};color:${hcolor(colorKey)}">${ICONS[iconKey||colorKey]}</span>
     ${esc(label)}<span class="arrow">${ICONS.ext}</span></a>`;
 }
+/* log buttons sit under the section they belong to */
 function bigBtn(sheet,label,colorKey,icon){
-  return `<button class="btn" data-sheet="${sheet}" style="margin-bottom:12px;background:${hcolor(colorKey)};color:var(--accent-ink)">${icon||ICONS.plus} ${esc(label)}</button>`;
+  return `<button class="btn" data-sheet="${sheet}" style="margin:-4px 0 16px;background:${hcolor(colorKey)};color:var(--accent-ink)">${icon||ICONS.plus} ${esc(label)}</button>`;
 }
 
 /* ---------- rating distribution (Letterboxd-style column chart) ---------- */
@@ -1598,7 +1950,12 @@ function pageDash(){
         <div class="date">${d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}</div>
         <h1>Life Dashboard</h1>
       </div>
-      <button class="iconbtn" data-sheet="settings" aria-label="Settings">${ICONS.gear}</button>
+      <div class="headbtns">
+        <button class="iconbtn" data-sheet="themes" aria-label="Themes">${ICONS.palette}</button>
+        <button class="iconbtn" data-sheet="notif-center" aria-label="Notifications">${ICONS.bell}${
+          unreadNotifs()?`<span class="dotbadge">${unreadNotifs()>9?'9+':unreadNotifs()}</span>`:''}</button>
+        <button class="iconbtn" data-sheet="settings" aria-label="Settings and backup">${ICONS.gear}</button>
+      </div>
     </div>
     <div class="summarychip">
       <div class="chip"><div class="k">${wk}</div><div class="l">logs this week</div></div>
@@ -1616,27 +1973,31 @@ function pageFilm(){
   const rated=movies.filter(m=>Number(m.rating)>0);
   return backBar('Film','film')+`
     ${linkBtn('https://letterboxd.com','Open Letterboxd','film')}
-    ${bigBtn('film-rate','Rate movie','film')}
     <div class="card"><h2><span class="grow">Movies</span><span class="badge">${movies.length}</span></h2>
       <div class="rowlist">${sliceList('movies',movies,l=>`
         <div class="row">
-          <div class="main"><div class="t">${esc(l.title||'Movie')}</div>
-            <div class="s">${l.imported?'imported':fmtDate(l.date)}</div></div>
-          <button data-sheet="film-rerate" data-arg="${l.id}" aria-label="Change rating">${stars(l.rating)}</button>
-          <button class="rowbtn" data-dellog="${l.id}" aria-label="Delete">${ICONS.trash}</button>
+          <div class="main" data-sheet="film-rerate" data-arg="${l.id}" role="button" style="cursor:pointer">
+            <div class="t">${esc(l.title||'Movie')}</div>
+            <div class="s">${[l.year,l.director].filter(Boolean).map(esc).join(' · ')||(l.imported?'imported':fmtDate(l.date))}</div></div>
+          <button data-sheet="film-rerate" data-arg="${l.id}" aria-label="Edit">${stars(l.rating)}</button>
+          <button class="rowbtn" data-sheet="film-rerate" data-arg="${l.id}" aria-label="Edit">${ICONS.edit}</button>
         </div>`,'<div class="empty">No movies yet</div>')}
       </div>
     </div>
+    ${bigBtn('film-rate','Rate movie','film')}
     ${rated.length?`<div class="card"><h2>Ratings</h2>${ratingChart(rated,hcolor('film'))}</div>`:''}
-    ${bigBtn('film-addwatch','Add to watchlist','film')}
     <div class="card"><h2><span class="grow">Watchlist</span><span class="badge">${state.film.watchlist.length}</span></h2>
       <div class="rowlist">${sliceList('watchlist',state.film.watchlist,w=>`
-        <div class="row"><div class="main"><div class="t">${esc(w.title)}</div>${w.director?`<div class="s">${esc(w.director)}</div>`:''}</div>
+        <div class="row">
+          <div class="main" data-sheet="watch-edit" data-arg="${w.id}" role="button" style="cursor:pointer">
+            <div class="t">${esc(w.title)}</div>
+            ${(w.year||w.director)?`<div class="s">${[w.year,w.director].filter(Boolean).map(esc).join(' · ')}</div>`:''}</div>
           <button class="rowbtn act" data-sheet="film-watched" data-arg="${w.id}" aria-label="Mark watched">${ICONS.check}</button>
-          <button class="rowbtn" data-sheet="film-unwatch" data-arg="${w.id}" aria-label="Remove">${ICONS.trash}</button>
+          <button class="rowbtn" data-sheet="watch-edit" data-arg="${w.id}" aria-label="Edit">${ICONS.edit}</button>
         </div>`,'<div class="empty">Nothing queued yet</div>')}
       </div>
-    </div>`;
+    </div>
+    ${bigBtn('film-addwatch','Add to watchlist','film')}`;
 }
 
 /* ---------- READING ---------- */
@@ -1658,7 +2019,6 @@ function pageReading(){
   const years=yearsFrom(state.reading.read);
   const rated=state.reading.read.filter(b=>Number(b.rating)>0);
   return backBar('Reading','reading')+`
-    ${bigBtn('book-log','Log a finished book','reading')}
     <div class="card"><h2><span class="grow">Bookshelf</span><span class="badge">${state.reading.read.length}</span></h2>
       ${searchBar('read-q',readQ,'Search title or author')}
       <div class="filterrow">
@@ -1667,43 +2027,47 @@ function pageReading(){
       </div>
       <div class="rowlist" id="read-list">${readListHtml()}</div>
     </div>
+    ${bigBtn('book-log','Log a finished book','reading')}
     ${rated.length?`<div class="card"><h2>Ratings</h2>${ratingChart(rated,hcolor('reading'))}</div>`:''}
-    ${bigBtn('book-addwish','Add to wishlist','reading')}
     <div class="card"><h2><span class="grow">Wishlist</span><span class="badge">${state.reading.toRead.length}</span></h2>
       <div class="rowlist">${sliceList('tbr',tbr,b=>`
         <div class="row">
           <button class="pinbtn ${b.pinned?'on':''}" data-pin="${b.id}" aria-label="${b.pinned?'Unpin':'Pin'}">${ICONS.pin}</button>
-          <div class="main"><div class="t">${esc(b.title)}</div>${b.author?`<div class="s">${esc(b.author)}</div>`:''}</div>
+          <div class="main" data-sheet="wish-book-edit" data-arg="${b.id}" role="button" style="cursor:pointer">
+            <div class="t">${esc(b.title)}</div>${b.author?`<div class="s">${esc(b.author)}</div>`:''}</div>
           <button class="rowbtn act" data-sheet="book-finish" data-arg="${b.id}" aria-label="Mark read">${ICONS.check}</button>
-          <button class="rowbtn" data-sheet="book-remove" data-arg="${b.id}" aria-label="Remove">${ICONS.trash}</button>
+          <button class="rowbtn" data-sheet="wish-book-edit" data-arg="${b.id}" aria-label="Edit">${ICONS.edit}</button>
         </div>`,'<div class="empty">No books queued</div>')}
       </div>
-    </div>`;
+    </div>
+    ${bigBtn('book-addwish','Add to wishlist','reading')}`;
 }
 
 /* ---------- DRAWING ---------- */
 function pageDrawing(){
   const loose=photosOf('drawing').filter(p=>!p.albumId);
   return backBar('Drawing','drawing')+`
-    ${bigBtn('draw-add','Add drawing','drawing',ICONS.camera)}
-    ${bigBtn('album-add','Add album','drawing',ICONS.folder)}
     <div class="card"><h2><span class="grow">Albums</span><span class="badge">${state.drawingAlbums.length}</span></h2>
       <div class="rowlist">${state.drawingAlbums.map(a=>{
         const n=photosOf('drawing').filter(p=>p.albumId===a.id).length;
         const cov=a.coverId&&photoCache.get(a.coverId);
-        return `<div class="albumrow" data-sheet="album-view" data-arg="${a.id}" role="button" style="cursor:pointer">
-          ${cov?`<img class="cov" src="${cov.dataUrl}" alt="">`:`<span class="cov">${ICONS.folder}</span>`}
-          <div class="main"><div class="t">${esc(a.title)}</div>
-            <div class="s">${n} drawing${n===1?'':'s'}${a.description?' · '+esc(plainText(a.description).slice(0,40)):''}</div></div>
-          ${ICONS.chevR.replace('<svg','<svg width="18" height="18" style="color:var(--ink3)"')}
+        return `<div class="albumrow">
+          <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;cursor:pointer" data-sheet="album-view" data-arg="${a.id}" role="button">
+            ${cov?`<img class="cov" src="${cov.dataUrl}" alt="">`:`<span class="cov">${ICONS.folder}</span>`}
+            <div class="main"><div class="t">${esc(a.title)}</div>
+              <div class="s">${n} drawing${n===1?'':'s'}${a.description?' · '+esc(plainText(a.description).slice(0,40)):''}</div></div>
+          </div>
+          <button class="rowbtn" data-sheet="album-edit-draw" data-arg="${a.id}" aria-label="Edit album">${ICONS.edit}</button>
         </div>`;}).join('')||'<div class="empty">Make an album to group your drawings</div>'}
       </div>
     </div>
+    ${bigBtn('album-add','Add album','drawing',ICONS.folder)}
     <div class="card"><h2><span class="grow">Gallery</span><span class="badge">${loose.length}</span></h2>
       ${loose.length?`<div class="gal">${loose.map(p=>`
         <button class="ph" data-sheet="photo-view" data-arg="${p.id}"><img src="${p.dataUrl}" alt="${esc(p.title||'Drawing')}">${p.title?`<span class="cap">${esc(p.title)}</span>`:''}</button>`).join('')}</div>`
       :'<div class="empty">Drawings you haven’t filed into an album show up here</div>'}
-    </div>`;
+    </div>
+    ${bigBtn('draw-add','Add drawing','drawing',ICONS.camera)}`;
 }
 
 /* ---------- MUSIC ---------- */
@@ -1772,7 +2136,6 @@ function pageMusic(){
   const years=yearsFrom(state.music.rated);
   return backBar('Music','music')+`
     ${linkBtn('https://open.spotify.com','Open Spotify','music')}
-    ${bigBtn('album-log','Log an album','music')}
     <div class="card"><h2><span class="grow">My vinyls</span><span class="badge">${state.music.rated.length}</span>${viewToggle('vinyl',vinylView)}</h2>
       ${searchBar('vinyl-q',vinylQ,'Search title or artist')}
       <div class="filterrow">
@@ -1781,10 +2144,11 @@ function pageMusic(){
       </div>
       <div id="vinyl-list">${vinylListHtml()}</div>
     </div>
-    ${bigBtn('album-like','Like an album','music')}
+    ${bigBtn('album-log','Log an album','music')}
     <div class="card"><h2><span class="grow">Listen list</span><span class="badge">${state.music.listenList.length}</span>${viewToggle('listen',listenView)}</h2>
       <div id="listen-list">${listenListHtml()}</div>
-    </div>`;
+    </div>
+    ${bigBtn('album-like','Like an album','music')}`;
 }
 
 /* ---------- CLOSET ---------- */
@@ -1799,9 +2163,10 @@ function pageCloset(){
         <button class="rowbtn act" data-sheet="closet-add" data-arg="${cat}" aria-label="Add ${cfg.name}">${ICONS.plus}</button></h2>
       <div class="chips">${['All',...cfg.subs].map(s=>`<button class="${f===s?'on':''}" data-cf="${cat}|${s}">${s}</button>`).join('')}</div>
       <div class="rowlist">${sliceList('closet-'+cat,shown,i=>`
-        <div class="row"><div class="main"><div class="t">${esc(i.name)}</div></div>
+        <div class="row">
+          <div class="main" data-sheet="closet-edit" data-arg="${i.id}" role="button" style="cursor:pointer"><div class="t">${esc(i.name)}</div></div>
           <span class="tag">${esc(i.sub)}</span>
-          <button class="rowbtn" data-sheet="closet-del" data-arg="${i.id}" aria-label="Delete">${ICONS.trash}</button>
+          <button class="rowbtn" data-sheet="closet-edit" data-arg="${i.id}" aria-label="Edit">${ICONS.edit}</button>
         </div>`,'<div class="empty">Nothing here yet</div>')}
       </div>
     </div>`;
@@ -1810,8 +2175,9 @@ function pageCloset(){
     catCard('jackets')+catCard('pants')+catCard('shirts')+`
     <div class="card"><h2><span class="grow">Wishlist</span><span class="badge">${state.closet.wishlist.length}</span></h2>
       <div class="rowlist">${sliceList('wishlist',state.closet.wishlist,w=>`
-        <div class="row"><div class="main"><div class="t">${esc(w.name)}</div></div>
-          <button class="rowbtn" data-sheet="wish-del" data-arg="${w.id}" aria-label="Delete">${ICONS.trash}</button>
+        <div class="row">
+          <div class="main" data-sheet="closet-wish-edit" data-arg="${w.id}" role="button" style="cursor:pointer"><div class="t">${esc(w.name)}</div></div>
+          <button class="rowbtn" data-sheet="closet-wish-edit" data-arg="${w.id}" aria-label="Edit">${ICONS.edit}</button>
         </div>`,'<div class="empty">Nothing on the wishlist</div>')}
       </div>
       <div class="addbar"><input id="wish-add" placeholder="Add a piece you want"><button data-sheet="wish-addgo" aria-label="Add">${ICONS.plus}</button></div>
@@ -1844,6 +2210,13 @@ function cycleVolume(c){return PROGRAM_DAYS.reduce((a,_,d)=>a+dayVolume(c,d),0);
 function protoWeek(){
   if(!state.protocol.startDate)return null;
   return Math.floor(daysBetween(state.protocol.startDate,todayStr())/7)+1;
+}
+/* the block splits: cut through week 10, then maintenance while training holds */
+function protoPhase(wk){
+  const w=wk||protoWeek()||1;
+  return w<=PROTO.cutWeeks
+    ? {id:'cut',   name:'Cut',         ...PROTO.cut}
+    : {id:'maint', name:'Maintenance', ...PROTO.maint};
 }
 function protoWeekStart(w){
   const d=parseD(state.protocol.startDate);
@@ -1922,22 +2295,28 @@ function pageLifting(){
   const today=protoDay();
   const setupDone=SETUP_ITEMS.every(i=>state.protocol.setup[i.k]);
 
+  const ph=protoPhase(wk||1);
   let head;
   if(!wk){
     head=`<div class="protohead">
       <div class="wk">16-week protocol</div>
       <div class="big">Not started</div>
-      <div class="sub2">${PROTO.startWeight} lb → ${PROTO.targetLo}–${PROTO.targetHi} lb · 4 days a week</div>
+      <div class="sub2">${PROTO.startWeight} lb → ${PROTO.targetLo}–${PROTO.targetHi} lb · cut ${PROTO.cutWeeks} weeks, then hold</div>
     </div>
     <button class="btn" data-sheet="proto-start" style="margin-bottom:14px">${ICONS.plus} Start the protocol</button>`;
   }else{
     const pct=Math.max(0,Math.min(100,(daysBetween(state.protocol.startDate,todayStr())/(PROTO.weeks*7))*100));
+    const cutPct=(PROTO.cutWeeks/PROTO.weeks)*100;
     const done=wk>PROTO.weeks;
     head=`<div class="protohead">
-      <div class="wk">${done?'Protocol complete':'16-week protocol'}</div>
+      <div class="wk">${done?'Protocol complete':ph.name+(ph.id==='cut'?` · week ${wk} of ${PROTO.cutWeeks}`:` · week ${wk} of ${PROTO.weeks}`)}</div>
       <div class="big">${done?'Week 16 done':'Week '+wk+' of '+PROTO.weeks}</div>
-      <div class="sub2">Train ${PROTO.trainDays} · floor ${PROTO.floor} lb</div>
-      <div class="protobar"><i style="width:${pct.toFixed(1)}%"></i></div>
+      <div class="sub2">${ph.kcal.toLocaleString()} kcal · train ${PROTO.trainDays} · floor ${PROTO.floor} lb</div>
+      <div class="protobar"><i style="width:${pct.toFixed(1)}%"></i>
+        <span style="position:absolute"></span></div>
+      <div style="position:relative;height:0">
+        <span style="position:absolute;left:${cutPct.toFixed(1)}%;top:-9px;width:2px;height:7px;background:rgba(255,255,255,.75);border-radius:1px"></span>
+      </div>
     </div>`;
   }
 
@@ -1960,9 +2339,13 @@ function pageLifting(){
       <span class="v">${today.weight?today.weight+' lb':'log'}</span>
     </button>
     <div class="macros">
-      <div class="macro"><div class="k">${PROTO.protein}g</div><div class="l">protein</div></div>
-      <div class="macro"><div class="k">${PROTO.carbs}g</div><div class="l">carbs</div></div>
-      <div class="macro"><div class="k">${PROTO.fat}g</div><div class="l">fat</div></div>
+      <div class="macro"><div class="k">${ph.protein}g</div><div class="l">protein</div></div>
+      <div class="macro"><div class="k">${ph.carbs}g</div><div class="l">carbs</div></div>
+      <div class="macro"><div class="k">${ph.fat}g</div><div class="l">fat</div></div>
+    </div>
+    <div class="row" style="border:none;padding:8px 0 0">
+      <div class="main"><div class="t">${ph.name} target</div></div>
+      <span class="num">${ph.kcal.toLocaleString()} kcal</span>
     </div>
   </div>`;
 
@@ -1992,16 +2375,31 @@ function pageLifting(){
       </div>`;
     }).join('');
     const curAvg=weekWeightAvg(shownWeek);
-    const pts=[];
+    /* weekly averages once there are two; before that, plot the daily weigh-ins */
+    const wkPts=[];
     for(let w=1;w<=Math.min(wk,PROTO.weeks);w++){
       const a=weekWeightAvg(w);
-      if(a!=null)pts.push({x:'W'+w,y:Number(a.toFixed(1))});
+      if(a!=null)wkPts.push({x:'W'+w,y:Number(a.toFixed(1))});
+    }
+    let chart='', chartLabel='';
+    if(wkPts.length>1){
+      chart=lineChart(wkPts,hcolor('lifting'),{unit:' lb'});
+      chartLabel='Weekly averages';
+    }else{
+      const dayPts=Object.entries(state.protocol.daily)
+        .filter(([d,v])=>v&&v.weight&&d>=state.protocol.startDate)
+        .sort((a,b)=>a[0]<b[0]?-1:1)
+        .map(([d,v])=>({x:parseD(d).toLocaleDateString(undefined,{month:'numeric',day:'numeric'}),y:Number(v.weight)}));
+      if(dayPts.length>1){ chart=lineChart(dayPts,hcolor('lifting'),{unit:' lb'}); chartLabel='Daily weigh-ins'; }
+      else if(dayPts.length===1){ chartLabel='One more weigh-in and the trend line starts'; }
+      else { chartLabel='Log a weigh-in to start the trend'; }
     }
     weightCard=`<div class="card">
       <h2><span class="grow">Weight</span><span class="badge">${curAvg!=null?curAvg.toFixed(1)+' lb avg':'week '+shownWeek}</span></h2>
+      ${chart?`<div style="font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">${chartLabel}</div>${chart}<hr class="hr">`
+             :`<div class="empty" style="padding:6px 0 12px">${chartLabel}</div>`}
       ${pastRows.length?`<div class="rowlist">${pastRows.join('')}</div><hr class="hr">`:''}
       <div class="rowlist">${dayRows}</div>
-      ${pts.length>1?lineChart(pts,hcolor('lifting'),{unit:' lb'}):''}
     </div>`;
   }
 
@@ -2124,7 +2522,6 @@ function pageGolf(){
       ${statTile(yr,'rounds — past year')}
       ${statTile(rounds.length,'rounds all-time')}
     </div>
-    ${bigBtn('golf-newcard','Start a scorecard','golf')}
     <div class="card"><h2><span class="grow">Scorecards</span><span class="badge">${sorted.length}</span></h2>
       <div class="rowlist">${sliceList('cards',sorted,l=>{
         const t=roundTotals(l);
@@ -2136,7 +2533,7 @@ function pageGolf(){
         </div>`;},'<div class="empty">Start a scorecard when you tee off</div>')}
       </div>
     </div>
-    ${bigBtn('golf-course','Add a course','golf')}
+    ${bigBtn('golf-newcard','Start a scorecard','golf')}
     <div class="card"><h2><span class="grow">Map</span><span class="badge">${state.golf.courses.length}</span></h2>
       <div class="pinboard">${state.golf.courses.map(c=>{
         const n=rounds.filter(r=>r.courseId===c.id).length;
@@ -2149,7 +2546,8 @@ function pageGolf(){
           <button class="rowbtn" data-sheet="golf-editcourse" data-arg="${c.id}" aria-label="Edit course">${ICONS.edit}</button>
         </div>`;}).join('')||'<div class="empty">Add the courses you play</div>'}
       </div>
-    </div>`;
+    </div>
+    ${bigBtn('golf-course','Add a course','golf')}`;
 }
 
 /* ---------- SKIING ---------- */
@@ -2167,19 +2565,30 @@ function pageSkiing(){
       ${statTile(runsTotal,'runs — total')}
       ${statTile(perDay==null?'—':perDay.toFixed(1),'runs per ski day')}
     </div>
+    <div class="card"><h2><span class="grow">Ski days</span><span class="badge">${all.length}</span></h2>
+      <div class="rowlist">${sliceList('skidays',[...all].sort((a,b)=>a.date<b.date?1:-1),l=>`
+        <div class="row">
+          <div class="main" data-sheet="ski-edit" data-arg="${l.id}" role="button" style="cursor:pointer">
+            <div class="t">${esc(l.resort||'Ski day')}</div><div class="s">${fmtDate(l.date)}</div></div>
+          <span class="num">${l.runs?l.runs+' runs':''}</span>
+          <button class="rowbtn" data-sheet="ski-edit" data-arg="${l.id}" aria-label="Edit">${ICONS.edit}</button>
+        </div>`,'<div class="empty">No ski days yet</div>')}
+      </div>
+    </div>
     ${bigBtn('ski-day','Log a ski day','skiing')}
-    ${bigBtn('ski-resort','Add a resort','skiing')}
     <div class="card"><h2><span class="grow">Resorts</span><span class="badge">${state.skiing.resorts.length}</span></h2>
       <div class="pinboard">${state.skiing.resorts.map(r=>{
         const n=all.filter(l=>l.resortId===r.id).length;
         return `<div class="pin">
           <span class="pdot" style="background:${htint('skiing')};color:${hcolor('skiing')}">${ICONS.pinIc}</span>
-          <div class="main"><div class="t">${esc(r.name)}</div><div class="s">${esc(r.location||'')}${r.location?' · ':''}${n} day${n===1?'':'s'}</div></div>
+          <div class="main" data-sheet="ski-editresort" data-arg="${r.id}" role="button" style="cursor:pointer">
+            <div class="t">${esc(r.name)}</div><div class="s">${esc(r.location||'')}${r.location?' · ':''}${n} day${n===1?'':'s'}</div></div>
           <a class="rowbtn" href="${mapsUrl(r.name,r.location)}" target="_blank" rel="noopener" aria-label="Open in Maps">${ICONS.ext}</a>
-          <button class="rowbtn" data-sheet="ski-delresort" data-arg="${r.id}" aria-label="Delete">${ICONS.trash}</button>
+          <button class="rowbtn" data-sheet="ski-editresort" data-arg="${r.id}" aria-label="Edit">${ICONS.edit}</button>
         </div>`;}).join('')||'<div class="empty">Add the resorts you ride</div>'}
       </div>
     </div>
+    ${bigBtn('ski-resort','Add a resort','skiing')}
     <div class="card"><h2><span class="grow">Day photos</span><span class="badge">${gallery.length}</span></h2>
       ${gallery.length?`<div class="gal">${gallery.map(p=>`
         <button class="ph" data-sheet="photo-view" data-arg="${p.id}"><img src="${p.dataUrl}" alt="${esc(p.title||'Ski day')}">${p.title?`<span class="cap">${esc(p.title)}</span>`:''}</button>`).join('')}</div>`
@@ -2215,7 +2624,6 @@ function pageCooking(){
   const nPlates=SHOWN['plates']||3;
   const locs=restLocations();
   return backBar('Cooking','cooking')+`
-    ${bigBtn('recipe-add','Add a recipe','cooking')}
     <div class="card"><h2><span class="grow">Cookbook</span><span class="badge">${state.cooking.recipes.length}</span></h2>
       <div class="rowlist">${sliceList('recipes',state.cooking.recipes,r=>`
         <div class="row" data-sheet="recipe-view" data-arg="${r.id}" role="button" style="cursor:pointer">
@@ -2225,7 +2633,7 @@ function pageCooking(){
         </div>`,'<div class="empty">Save your first recipe</div>')}
       </div>
     </div>
-    ${bigBtn('rest-rank','Rank a restaurant','cooking')}
+    ${bigBtn('recipe-add','Add a recipe','cooking')}
     <div class="card"><h2><span class="grow">Restaurants ranked</span><span class="badge">${rated.length}</span></h2>
       ${searchBar('rest-q',restQ,'Search name or location')}
       <div class="filterrow">
@@ -2235,18 +2643,20 @@ function pageCooking(){
       </div>
       <div class="pinboard" id="rest-list">${restListHtml()}</div>
     </div>
-    ${bigBtn('resv-add','Add a reservation','cooking')}
+    ${bigBtn('rest-rank','Rank a restaurant','cooking')}
     <div class="card"><h2><span class="grow">Reservations</span><span class="badge">${resv.length}</span></h2>
       <div class="pinboard">${sliceList('resv',resv,r=>`
         <div class="pin">
           <span class="pdot" style="background:var(--surface);color:var(--ink3)">${ICONS.pinIc}</span>
-          <div class="main"><div class="t">${esc(r.name)}</div><div class="s">${esc(r.location||'')}</div></div>
+          <div class="main" data-sheet="resv-edit" data-arg="${r.id}" role="button" style="cursor:pointer">
+            <div class="t">${esc(r.name)}</div><div class="s">${esc(r.location||'')}</div></div>
           <a class="rowbtn" href="${mapsUrl(r.name,r.location)}" target="_blank" rel="noopener" aria-label="Open in Maps">${ICONS.ext}</a>
           <button class="rowbtn act" data-sheet="rest-tried" data-arg="${r.id}" aria-label="Mark tried">${ICONS.check}</button>
-          <button class="rowbtn" data-sheet="rest-del" data-arg="${r.id}" aria-label="Delete">${ICONS.trash}</button>
+          <button class="rowbtn" data-sheet="resv-edit" data-arg="${r.id}" aria-label="Edit">${ICONS.edit}</button>
         </div>`,'<div class="empty">Places you want to try live here</div>')}
       </div>
     </div>
+    ${bigBtn('resv-add','Add a reservation','cooking')}
     <div class="card"><h2><span class="grow">Plates</span><span class="badge">${plates.length}</span><button class="rowbtn act" data-sheet="plate-add" aria-label="Add plate">${ICONS.camera}</button></h2>
       ${plates.length?`<div class="gal">${plates.slice(0,nPlates*3).map(p=>`
         <button class="ph" data-sheet="photo-view" data-arg="${p.id}"><img src="${p.dataUrl}" alt="${esc(p.title||'Plate')}"><span class="cap">${esc(p.title||'')}${p.origin?' · '+esc(p.origin):''}</span></button>`).join('')}</div>
@@ -2266,14 +2676,16 @@ function pageTennis(){
       ${statTile(fmtMin(mins(7)),'time · 7 days')}
       ${statTile(fmtMin(mins(365)),'time · year')}
     </div>
-    ${bigBtn('tennis-log','Log a session','tennis')}
     <div class="card"><h2><span class="grow">Recent sessions</span><span class="badge">${recent.length}</span></h2>
       <div class="rowlist">${sliceList('tennisRecent',recent,l=>`
-        <div class="row"><div class="main"><div class="t">${fmtMin(l.minutes||0)}</div><div class="s">${fmtDate(l.date)}</div></div>
-          <button class="rowbtn" data-dellog="${l.id}" aria-label="Delete">${ICONS.trash}</button>
+        <div class="row">
+          <div class="main" data-sheet="tennis-edit" data-arg="${l.id}" role="button" style="cursor:pointer">
+            <div class="t">${fmtMin(l.minutes||0)}</div><div class="s">${fmtDate(l.date)}</div></div>
+          <button class="rowbtn" data-sheet="tennis-edit" data-arg="${l.id}" aria-label="Edit">${ICONS.edit}</button>
         </div>`,'<div class="empty">No sessions yet</div>')}
       </div>
-    </div>`;
+    </div>
+    ${bigBtn('tennis-log','Log a session','tennis')}`;
 }
 
 /* ---------- JOURNAL ---------- */
@@ -2310,12 +2722,12 @@ function pageJournal(){
   }).join('');
   return backBar('Journaling','journal')+`
     <div class="stats"><div class="stat" style="grid-column:1/-1"><div class="k">${all.length}</div><div class="l">total entries</div></div></div>
-    ${bigBtn('journal-new','New entry','journal')}
     <div class="card" style="padding:12px">
       ${searchBar('jq',journalQ,'Search entries — words or dates')}
       <div class="filterrow" style="margin-bottom:0"><select id="jmonth">${monthOpts}</select></div>
     </div>
-    <div id="jlist">${journalEntriesHtml()}</div>`;
+    <div id="jlist">${journalEntriesHtml()}</div>
+    ${bigBtn('journal-new','New entry','journal')}`;
 }
 
 const PAGES={
@@ -2335,7 +2747,129 @@ let anSel='total';
 function ctxDate(){return view.tab==='cal'&&!view.page?calSel:todayStr();}
 function dateField(id){return `<label>Date</label><input type="date" id="${id||'sh-date'}" value="${ctxDate()}">`;}
 function shDate(el){return el.querySelector('#sh-date')?.value||todayStr();}
-const SHEETS={};
+/* SHEETS is declared in the core so earlier modules can register into it */
+
+/* ---------- edit sheets for the simpler lists ---------- */
+function editSheet({title,fields,onSave,onDelete}){
+  openSheet({title,
+    body:fields.map(f=>f.type==='select'
+      ? `<label>${esc(f.label)}</label><select id="${f.id}">${f.options.map(o=>`<option ${o===f.value?'selected':''}>${esc(o)}</option>`).join('')}</select>`
+      : `<label>${esc(f.label)}</label><input id="${f.id}" ${f.numeric?'type="number" inputmode="decimal"':''} value="${esc(f.value==null?'':f.value)}" placeholder="${esc(f.ph||'')}">`
+    ).join(''),
+    actions:[{label:'Delete',style:'danger',handler:()=>{onDelete&&onDelete();}},
+      {label:'Save',handler:(el)=>{
+        const vals={};
+        fields.forEach(f=>{vals[f.id]=el.querySelector('#'+f.id).value.trim();});
+        return onSave(vals,el);
+      }}]});
+}
+SHEETS['watch-edit']=(id)=>{
+  const w=state.film.watchlist.find(x=>x.id===id); if(!w)return;
+  openSheet({title:'Edit watchlist entry',body:filmFields(w),
+    actions:[{label:'Delete',style:'danger',handler:()=>{
+        state.film.watchlist=state.film.watchlist.filter(x=>x.id!==id);save();render();toast('Removed');}},
+      {label:'Save',handler:(el)=>{
+        const v=filmVals(el);
+        if(!v.title){toast('Needs a title');return false;}
+        Object.assign(w,v); save(); render(); toast('Saved');
+      }}]});
+};
+SHEETS['wish-book-edit']=(id)=>{
+  const b=state.reading.toRead.find(x=>x.id===id); if(!b)return;
+  editSheet({title:'Edit wishlist book',
+    fields:[{id:'f-t',label:'Title',value:b.title},{id:'f-a',label:'Author',value:b.author}],
+    onDelete:()=>{state.reading.toRead=state.reading.toRead.filter(x=>x.id!==id);save();render();toast('Removed');},
+    onSave:(v)=>{ if(!v['f-t']){toast('Needs a title');return false;}
+      b.title=v['f-t']; b.author=v['f-a']; save(); render(); toast('Saved'); }});
+};
+SHEETS['closet-edit']=(id)=>{
+  const i=state.closet.items.find(x=>x.id===id); if(!i)return;
+  editSheet({title:'Edit item',
+    fields:[{id:'f-n',label:'Name',value:i.name},
+            {id:'f-s',label:'Type',type:'select',value:i.sub,options:CLOSET_CATS[i.cat].subs}],
+    onDelete:()=>{state.closet.items=state.closet.items.filter(x=>x.id!==id);save();render();toast('Removed');},
+    onSave:(v)=>{ if(!v['f-n']){toast('Needs a name');return false;}
+      i.name=v['f-n']; i.sub=v['f-s']; save(); render(); toast('Saved'); }});
+};
+SHEETS['closet-wish-edit']=(id)=>{
+  const w=state.closet.wishlist.find(x=>x.id===id); if(!w)return;
+  editSheet({title:'Edit wishlist piece',
+    fields:[{id:'f-n',label:'Name',value:w.name}],
+    onDelete:()=>{state.closet.wishlist=state.closet.wishlist.filter(x=>x.id!==id);save();render();toast('Removed');},
+    onSave:(v)=>{ if(!v['f-n']){toast('Needs a name');return false;}
+      w.name=v['f-n']; save(); render(); toast('Saved'); }});
+};
+SHEETS['ski-editresort']=(id)=>{
+  const r=state.skiing.resorts.find(x=>x.id===id); if(!r)return;
+  editSheet({title:'Edit resort',
+    fields:[{id:'f-n',label:'Resort',value:r.name},{id:'f-l',label:'Location',value:r.location}],
+    onDelete:()=>{state.skiing.resorts=state.skiing.resorts.filter(x=>x.id!==id);save();render();toast('Removed');},
+    onSave:(v)=>{ if(!v['f-n']){toast('Needs a name');return false;}
+      r.name=v['f-n']; r.location=v['f-l']; save(); render(); toast('Saved'); }});
+};
+SHEETS['ski-edit']=(id)=>{
+  const l=state.logs.find(x=>x.id===id); if(!l)return;
+  openSheet({title:'Edit ski day',
+    body:`<label>Resort</label><input id="f-r" value="${esc(l.resort||'')}">
+      <label>Runs</label><input id="f-n" type="number" inputmode="numeric" value="${l.runs||''}">
+      <label>Date</label><input type="date" id="sh-date" value="${l.date}">`,
+    actions:[{label:'Delete',style:'danger',handler:()=>{delLog(id);render();toast('Removed');}},
+      {label:'Save',handler:(el)=>{
+        l.resort=el.querySelector('#f-r').value.trim();
+        l.runs=Number(el.querySelector('#f-n').value)||0;
+        l.date=shDate(el); save(); render(); toast('Saved');
+      }}]});
+};
+SHEETS['resv-edit']=(id)=>{
+  const r=state.cooking.restaurants.find(x=>x.id===id); if(!r)return;
+  editSheet({title:'Edit reservation',
+    fields:[{id:'f-n',label:'Name',value:r.name},{id:'f-l',label:'Location',value:r.location}],
+    onDelete:()=>{state.cooking.restaurants=state.cooking.restaurants.filter(x=>x.id!==id);save();render();toast('Removed');},
+    onSave:(v)=>{ if(!v['f-n']){toast('Needs a name');return false;}
+      r.name=v['f-n']; r.location=v['f-l']; save(); render(); toast('Saved'); }});
+};
+SHEETS['tennis-edit']=(id)=>{
+  const l=state.logs.find(x=>x.id===id); if(!l)return;
+  openSheet({title:'Edit session',
+    body:`<label>Minutes played</label><input id="f-m" type="number" inputmode="numeric" value="${l.minutes||''}">
+      <label>Date</label><input type="date" id="sh-date" value="${l.date}">`,
+    actions:[{label:'Delete',style:'danger',handler:()=>{delLog(id);render();toast('Removed');}},
+      {label:'Save',handler:(el)=>{
+        const m=Number(el.querySelector('#f-m').value);
+        if(!m){toast('Enter minutes');return false;}
+        l.minutes=m; l.date=shDate(el); save(); render(); toast('Saved');
+      }}]});
+};
+SHEETS['album-edit-draw']=(id)=>{
+  const a=state.drawingAlbums.find(x=>x.id===id); if(!a)return;
+  let pending=null;
+  openSheet({title:'Edit album',
+    body:`<label>Title</label><input id="f-t" value="${esc(a.title)}">
+      <label>Description</label>${richField('f-d',a.description,'What is this album?')}
+      <label>Cover photo</label>
+      <button type="button" class="btn quiet" id="f-cov">${ICONS.camera} ${a.coverId?'Change cover':'Choose cover'}</button>
+      <img id="f-prev" class="${a.coverId&&photoCache.get(a.coverId)?'':'hidden'}" alt=""
+        src="${a.coverId&&photoCache.get(a.coverId)?photoCache.get(a.coverId).dataUrl:''}"
+        style="width:120px;border-radius:12px;margin-top:10px;display:block">`,
+    actions:[{label:'Delete album',style:'danger',handler:()=>{
+        photosOf('drawing').filter(p=>p.albumId===id).forEach(p=>{p.albumId=null;photoPut(p);});
+        if(a.coverId)photoDelete(a.coverId);
+        state.drawingAlbums=state.drawingAlbums.filter(x=>x.id!==id);
+        save();render();toast('Album deleted — drawings kept');
+      }},
+      {label:'Save',handler:(el)=>{
+        const t=el.querySelector('#f-t').value.trim();
+        if(!t){toast('Needs a title');return false;}
+        if(pending){ if(a.coverId)photoDelete(a.coverId);
+          const p={id:uid(),dataUrl:pending,kind:'cover',title:t,date:todayStr()};photoPut(p);a.coverId=p.id; }
+        a.title=t; a.description=richVal(el,'f-d'); save(); render(); toast('Saved');
+      }}],
+    onMount(el){
+      el.querySelector('#f-cov').addEventListener('click',()=>{
+        pickImage(d=>{pending=d;const i=el.querySelector('#f-prev');i.src=d;i.classList.remove('hidden');});
+      });
+    }});
+};
 
 /* ---------- themes ---------- */
 SHEETS['themes']=()=>{
@@ -2384,7 +2918,6 @@ SHEETS['settings']=()=>{
   openSheet({title:'Settings & backup',
     body:`<p class="sub">Your data lives on this phone. Export a backup now and then.</p>
       ${state.lastBackup?`<p class="note">Last backup: ${fmtDate(state.lastBackup)}</p>`:'<p class="note" style="color:var(--danger)">No backup yet.</p>'}
-      <button class="btn quiet" id="go-themes" style="margin-top:6px">${ICONS.grid} Themes</button>
       <div class="actions" style="margin-top:10px">
         <button class="btn" id="bk-exp">Export backup</button>
         <button class="btn quiet" id="bk-imp">Import backup</button>
@@ -2393,7 +2926,7 @@ SHEETS['settings']=()=>{
       <button class="btn danger" id="bk-reset">Erase all data</button>
       <p class="note">Always open Life Dashboard from its Home Screen icon — Safari tabs keep a separate copy of your data.</p>`,
     onMount(el){
-      el.querySelector('#go-themes').addEventListener('click',()=>{closeSheet(true);SHEETS['themes']();});
+
       el.querySelector('#bk-exp').addEventListener('click',exportBackup);
       el.querySelector('#bk-imp').addEventListener('click',importBackup);
       el.querySelector('#bk-reset').addEventListener('click',()=>{
@@ -2450,44 +2983,55 @@ function doRestore(text){
 }
 
 /* ---------- FILM ---------- */
+const filmFields=(o)=>`<label>Title</label><input id="sh-t" value="${esc(o&&o.title||'')}" placeholder="Movie title">
+  <div class="fieldrow">
+    <div style="flex:.55"><label>Year</label><input id="sh-y" type="number" inputmode="numeric" value="${o&&o.year||''}" placeholder="e.g. 1999"></div>
+    <div style="flex:1.45"><label>Director</label><input id="sh-d" value="${esc(o&&o.director||'')}" placeholder="Director"></div>
+  </div>`;
+const filmVals=(el)=>({title:el.querySelector('#sh-t').value.trim(),
+  year:Number(el.querySelector('#sh-y').value)||null,
+  director:el.querySelector('#sh-d').value.trim()});
+
 SHEETS['film-rate']=()=>openSheet({title:'Rate movie',
-  body:`<label>Title</label><input id="sh-t" placeholder="What did you watch?">
-    <label>Your rating</label>${starBox(0)}${dateField()}`,
+  body:`${filmFields()}<label>Your rating</label>${starBox(0)}${dateField()}`,
   actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
     {label:'Save',handler:(el)=>{
-      const t=el.querySelector('#sh-t').value.trim();
-      if(!t){toast('Needs a title');return false;}
-      addLog('film','movie',{title:t,rating:starVal(el)},shDate(el));
+      const v=filmVals(el);
+      if(!v.title){toast('Needs a title');return false;}
+      addLog('film','movie',{...v,rating:starVal(el)},shDate(el));
       render();toast('Movie logged 🎬');
     }}]});
 SHEETS['film-rerate']=(id)=>{
   const l=state.logs.find(x=>x.id===id);if(!l)return;
   openSheet({title:l.title||'Movie',
-    body:`<label>Title</label><input id="sh-t" value="${esc(l.title||'')}">
-      <label>Your rating</label>${starBox(l.rating||0)}`,
+    body:`${filmFields(l)}<label>Your rating</label>${starBox(l.rating||0)}
+      <label>Date</label><input type="date" id="sh-date" value="${l.date}">`,
     actions:[{label:'Delete',style:'danger',handler:()=>{delLog(id);render();toast('Removed');}},
       {label:'Save',handler:(el)=>{
-        l.title=el.querySelector('#sh-t').value.trim()||l.title;
-        l.rating=starVal(el); save(); render();
+        const v=filmVals(el);
+        if(!v.title){toast('Needs a title');return false;}
+        Object.assign(l,v); l.rating=starVal(el); l.date=shDate(el);
+        save(); render(); toast('Saved');
       }}]});
 };
 SHEETS['film-addwatch']=()=>openSheet({title:'Add to watchlist',
-  body:`<label>Title</label><input id="sh-t" placeholder="Movie title">
-    <label>Director</label><input id="sh-d" placeholder="Director">`,
+  body:filmFields(),
   actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
     {label:'Add',handler:(el)=>{
-      const t=el.querySelector('#sh-t').value.trim();
-      if(!t){toast('Needs a title');return false;}
-      state.film.watchlist.push({id:uid(),title:t,director:el.querySelector('#sh-d').value.trim()});
+      const v=filmVals(el);
+      if(!v.title){toast('Needs a title');return false;}
+      state.film.watchlist.push({id:uid(),...v});
       save();render();toast('Added to watchlist');
     }}]});
 SHEETS['film-watched']=(id)=>{
   const w=state.film.watchlist.find(x=>x.id===id);if(!w)return;
-  openSheet({title:`Rate “${w.title}”`,body:`${starBox(0)}${dateField()}`,
+  openSheet({title:`Rate “${w.title}”`,
+    sub:[w.year,w.director].filter(Boolean).join(' · ')||undefined,
+    body:`${starBox(0)}${dateField()}`,
     actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
       {label:'Log it',handler:(el)=>{
         state.film.watchlist=state.film.watchlist.filter(x=>x.id!==id);
-        addLog('film','movie',{title:w.title,rating:starVal(el)},shDate(el));
+        addLog('film','movie',{title:w.title,year:w.year||null,director:w.director||'',rating:starVal(el)},shDate(el));
         render();toast('Logged 🎬');
       }}]});
 };
@@ -3069,7 +3613,7 @@ SHEETS['recipe-view']=(id)=>{
       <div class="macro"><div class="k">${r.fat||'—'}${r.fat?'g':''}</div><div class="l">fat</div></div>
     </div>`:'';
   openSheet({title:r.title,sub:meta,
-    body:`${macros}
+    body:`${r.note?`<div class="rich" style="color:var(--ink2);margin-bottom:8px">${esc(r.note)}</div>`:''}${macros}
       ${r.ingredients?`<h2 style="font-size:14px;margin:14px 0 4px">Ingredients</h2><div class="rich">${safeHtml(r.ingredients)}</div>`:''}
       ${r.steps?`<h2 style="font-size:14px;margin:14px 0 4px">Steps</h2><div class="rich">${safeHtml(r.steps)}</div>`:''}`,
     actions:[{label:'Edit',style:'quiet',handler:()=>{setTimeout(()=>recipeSheet(r),240);}},
@@ -3205,22 +3749,55 @@ SHEETS['cal-lift']=()=>{
       }));
     }});
 };
+/* the calendar schedules reminders now — logging lives on the hobby pages */
 SHEETS['cal-picker']=()=>{
-  openSheet({title:'Log something',sub:'Which hobby?',
+  openSheet({title:'Schedule a reminder',sub:'Which hobby?',
     body:`<div class="pickgrid">${HOBBIES.filter(h=>h.key!=='fashion').map(h=>`
       <button data-h="${h.key}"><span class="ic ic-${h.key}">${ICONS[h.key]}</span><span>${h.name}</span></button>`).join('')}</div>`,
     onMount(el){
       el.querySelectorAll('[data-h]').forEach(b=>b.addEventListener('click',()=>{
-        const opts=QUICK[b.dataset.h];
-        if(opts.length===1){closeSheet(true);SHEETS[opts[0]]();return;}
-        openSheet({title:H[b.dataset.h].name,sub:'What do you want to log?',
-          body:`<div class="rowlist">${opts.map(o=>`
-            <button class="row" data-o="${o}" style="width:100%;text-align:left"><div class="main"><div class="t">${QUICK_LABELS[o]}</div></div>${ICONS.chevR.replace('<svg','<svg width="18" height="18" style="color:var(--ink3)"')}</button>`).join('')}</div>`,
-          onMount(el2){
-            el2.querySelectorAll('[data-o]').forEach(x=>x.addEventListener('click',()=>{closeSheet(true);SHEETS[x.dataset.o]();}));
-          }});
+        closeSheet(true); SHEETS['rem-add'](b.dataset.h);
       }));
     }});
+};
+SHEETS['rem-add']=(hobby)=>{
+  const h=H[hobby]||H.film;
+  openSheet({title:`Remind me — ${h.name}`,
+    body:`<label>Date</label><input type="date" id="sh-date" value="${ctxDate()}">
+      <label>Note (optional)</label><input id="rem-n" placeholder="e.g. tee time at 8, or finish chapter 4">
+      <label>Repeat</label>
+      <select id="rem-rep">
+        <option value="">Just once</option>
+        <option value="7">Every week</option>
+        <option value="14">Every 2 weeks</option>
+        <option value="30">Every month</option>
+      </select>`,
+    actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+      {label:'Schedule',handler:(el)=>{
+        state.reminders.push({id:uid(),hobby,date:shDate(el),
+          note:el.querySelector('#rem-n').value.trim(),
+          repeat:Number(el.querySelector('#rem-rep').value)||0,
+          done:false,firedOn:null});
+        save();render();toast('Reminder set');
+      }}]});
+};
+SHEETS['rem-edit']=(id)=>{
+  const r=state.reminders.find(x=>x.id===id); if(!r)return;
+  openSheet({title:`Reminder — ${H[r.hobby]?H[r.hobby].name:''}`,
+    body:`<label>Date</label><input type="date" id="sh-date" value="${r.date}">
+      <label>Note</label><input id="rem-n" value="${esc(r.note||'')}">
+      <label>Repeat</label>
+      <select id="rem-rep">
+        ${[['','Just once'],['7','Every week'],['14','Every 2 weeks'],['30','Every month']]
+          .map(([v,n])=>`<option value="${v}" ${String(r.repeat||'')===v?'selected':''}>${n}</option>`).join('')}
+      </select>`,
+    actions:[{label:'Delete',style:'danger',handler:()=>{
+        state.reminders=state.reminders.filter(x=>x.id!==id);save();render();toast('Removed');}},
+      {label:'Save',handler:(el)=>{
+        r.date=shDate(el); r.note=el.querySelector('#rem-n').value.trim();
+        r.repeat=Number(el.querySelector('#rem-rep').value)||0;
+        save();render();toast('Saved');
+      }}]});
 };
 SHEETS['cal-month']=()=>{
   let y=calMonth.getFullYear();
@@ -3255,15 +3832,20 @@ function pageCalendar(){
   state.logs.filter(l=>!l.imported).forEach(l=>{(byDate[l.date]=byDate[l.date]||[]).push(l);});
   let cells='';
   for(let i=0;i<startDow;i++)cells+='<div class="cald out"></div>';
+  const remByDate={};
+  state.reminders.forEach(r=>{(remByDate[r.date]=remByDate[r.date]||[]).push(r);});
   for(let d=1;d<=dim;d++){
     const ds=dstr(new Date(y,m,d));
-    const hobbies=[...new Set((byDate[ds]||[]).map(l=>l.hobby))].slice(0,4);
+    const hobbies=[...new Set((byDate[ds]||[]).map(l=>l.hobby))].slice(0,3);
+    const rems=[...new Set((remByDate[ds]||[]).filter(r=>!r.done).map(r=>r.hobby))].slice(0,2);
     cells+=`<button class="cald ${ds===todayStr()?'today':''} ${ds===calSel?'sel':''}" data-day="${ds}">
       <span class="dnum">${d}</span>
-      <span class="dots">${hobbies.map(h=>`<i style="background:${hcolor(h)}"></i>`).join('')}</span>
+      <span class="dots">${hobbies.map(h=>`<i style="background:${hcolor(h)}"></i>`).join('')}${
+        rems.map(h=>`<i class="rem" style="background:${hcolor(h)}"></i>`).join('')}</span>
     </button>`;
   }
   const sel=byDate[calSel]||[];
+  const selRem=(remByDate[calSel]||[]);
   return `
     <div class="apphead"><div><div class="date">Plan & log</div><h1>Calendar</h1></div></div>
     <div class="card">
@@ -3279,15 +3861,27 @@ function pageCalendar(){
         ${cells}
       </div>
     </div>
-    <div class="card"><h2>${calSel===todayStr()?'Today':fmtDate(calSel)}</h2>
+    <div class="card"><h2><span class="grow">${calSel===todayStr()?'Today':fmtDate(calSel)} · planned</span><span class="badge">${selRem.length}</span></h2>
+      <div class="rowlist">${selRem.map(r=>`
+        <div class="remrow ${r.done?'done':''}">
+          <button class="chk ${r.done?'on':''}" data-remdone="${r.id}" style="padding:0;border:none;flex:none;width:auto">
+            <span class="box">${ICONS.check}</span></button>
+          <span class="ic-${r.hobby}" style="width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none">${ICONS[r.hobby]}</span>
+          <div class="main" data-sheet="rem-edit" data-arg="${r.id}" role="button" style="cursor:pointer">
+            <div class="t">${esc(H[r.hobby]?H[r.hobby].name:'Reminder')}</div>
+            <div class="s">${esc(r.note||'')}${r.repeat?(r.note?' · ':'')+'repeats every '+r.repeat+'d':''}</div></div>
+          <button class="rowbtn" data-sheet="rem-edit" data-arg="${r.id}" aria-label="Edit">${ICONS.edit}</button>
+        </div>`).join('')||'<div class="empty">Nothing planned — tap + to schedule</div>'}</div>
+    </div>
+    <div class="card"><h2><span class="grow">Logged</span><span class="badge">${sel.length}</span></h2>
       <div class="rowlist">${sel.map(l=>`
         <div class="row">
-          <span style="width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;background:${htint(l.hobby)};color:${hcolor(l.hobby)}">${ICONS[l.hobby]}</span>
+          <span class="ic-${l.hobby}" style="width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none">${ICONS[l.hobby]}</span>
           <div class="main"><div class="t">${esc(logLabel(l))}</div><div class="s">${H[l.hobby].name}</div></div>
           <button class="rowbtn" data-dellog="${l.id}" aria-label="Delete">${ICONS.trash}</button>
-        </div>`).join('')||'<div class="empty">Nothing logged — tap + to add</div>'}</div>
+        </div>`).join('')||'<div class="empty">Nothing logged this day</div>'}</div>
     </div>
-    <button class="fab" data-sheet="cal-picker" aria-label="Log something">${ICONS.plus}</button>`;
+    <button class="fab" data-sheet="cal-picker" aria-label="Schedule a reminder">${ICONS.plus}</button>`;
 }
 function logLabel(l){
   if(l.type==='movie')return (l.title||'Movie')+(l.rating?` · ${fmtStars(l.rating)}★`:'');
@@ -3421,11 +4015,40 @@ function checkCadence(){
       state.notify.sent[key]=last;
       if(status==='on')return;
       const c=notifyCopy(key,n,status,t);
-      fireNotification(c.title,c.body);
+      pushNotif({kind:'cadence',hobby:key,title:c.title,body:c.body});
     });
   }
   checkProtocolNotices();
+  checkReminders();
   save();
+}
+/* scheduled reminders: fire on or after their day, once each, then repeat if set */
+function checkReminders(){
+  if(state.notify.reminders===false)return;
+  const today=todayStr();
+  let touched=false;
+  state.reminders.forEach(r=>{
+    if(r.done)return;
+    if(r.date>today)return;
+    if(r.firedOn===today)return;
+    r.firedOn=today; touched=true;
+    const name=H[r.hobby]?H[r.hobby].name:'Reminder';
+    const late=daysBetween(r.date,today);
+    pushNotif({kind:'reminder',hobby:r.hobby,page:r.hobby,
+      title:`${name} — scheduled${late>0?` ${late}d ago`:' today'}`,
+      body:r.note||`You planned ${name.toLowerCase()} for ${fmtDate(r.date)}.`});
+  });
+  if(touched)save();
+}
+function completeReminder(id){
+  const r=state.reminders.find(x=>x.id===id); if(!r)return;
+  if(r.repeat&&!r.done){
+    const nd=new Date(parseD(r.date).getTime()+r.repeat*DAY);
+    r.date=dstr(nd); r.firedOn=null;
+  }else{
+    r.done=!r.done;
+  }
+  save(); render();
 }
 function dailyComplete(dateStr){
   const d=state.protocol.daily[dateStr]||{};
@@ -3445,14 +4068,14 @@ function checkProtocolNotices(){
       const d=state.protocol.daily[ys]||{};
       const missed=[...DAILY_ITEMS.filter(i=>!d[i.k]).map(i=>i.t.split(' —')[0]),...(d.weight?[]:['Weigh in'])];
       state.notify.sent['daily']=ys;
-      fireNotification('Yesterday’s checklist',`${missed.length} item${missed.length===1?'':'s'} unlogged: ${missed.join(', ')}.`);
+      pushNotif({kind:'daily',hobby:'lifting',page:'lifting',title:'Yesterday’s checklist',body:`${missed.length} item${missed.length===1?'':'s'} unlogged: ${missed.join(', ')}.`});
     }
   }
   // Sunday tasks
   if(state.notify.sunday!==false&&new Date().getDay()===0){
     if(state.notify.sent['sunday']!==today&&state.protocol.weeklyWaist[wk]==null){
       state.notify.sent['sunday']=today;
-      fireNotification('Sunday — waist and weekly average',`Measure your waist at the navel for week ${wk}, then check the week’s weight average.`);
+      pushNotif({kind:'sunday',hobby:'lifting',page:'lifting',title:'Sunday — waist and weekly average',body:`Measure your waist at the navel for week ${wk}, then check the week’s weight average.`});
     }
   }
   // checkpoints
@@ -3463,39 +4086,10 @@ function checkProtocolNotices(){
       if(c.done)return;
       if(state.notify.sent['cpt'+w])return;
       state.notify.sent['cpt'+w]=today;
-      fireNotification(`Week ${w} checkpoint`,w===16?'Final photos and measurements are due.':'Photos and a waist-trend review are due.');
+      pushNotif({kind:'checkpoint',hobby:'lifting',page:'lifting',title:`Week ${w} checkpoint`,body:w===16?'Final photos and measurements are due.':'Photos and a waist-trend review are due.'});
     });
   }
 }
-SHEETS['notif-settings']=()=>{
-  const row=(k,title,desc)=>`<div class="switchrow">
-    <div class="main"><div style="font-weight:700;font-size:14.5px">${title}</div>
-      <div class="s" style="font-size:12.5px;color:var(--ink2)">${desc}</div></div>
-    <span class="switch ${state.notify[k]!==false?'on':''}" data-ntoggle="${k}"><i></i></span></div>`;
-  openSheet({title:'Notifications',
-    body:`<div class="switchrow">
-        <span style="color:var(--ink2);display:flex">${ICONS.bell}</span>
-        <div class="main"><div style="font-weight:700;font-size:14.5px">Notifications</div>
-          <div class="s" style="font-size:12.5px;color:var(--ink2)">${state.notify.enabled?'On':'Off'}</div></div>
-        <span class="switch ${state.notify.enabled?'on':''}" id="notif-main"><i></i></span></div>
-      <hr class="hr">
-      ${row('cadence','Hobby cadence','When a hobby drops below its range — or runs ahead of it')}
-      ${row('daily','Daily tasks','When yesterday’s checklist was left unfinished')}
-      ${row('sunday','Sunday tasks','Waist measurement and the week’s weight average')}
-      ${row('checkpoints','Checkpoints','Weeks 4, 8, 12 and 16')}`,
-    onMount(el){
-      el.querySelector('#notif-main').addEventListener('click',function(){
-        if(state.notify.enabled){state.notify.enabled=false;save();this.classList.remove('on');render();}
-        else enableNotifications().then(ok=>{ if(ok){this.classList.add('on');checkCadence();render();} });
-      });
-      el.querySelectorAll('[data-ntoggle]').forEach(s=>s.addEventListener('click',function(){
-        const k=this.dataset.ntoggle;
-        state.notify[k]=state.notify[k]===false;
-        this.classList.toggle('on',state.notify[k]!==false);
-        save();
-      }));
-    }});
-};
 
 /* ---------- analytics ---------- */
 function pageAnalytics(){
@@ -3515,7 +4109,7 @@ function anTotalHtml(){
       const rank=s=>s.offSeason?3:s.status==='below'?0:s.status==='on'?2:1;
       return rank(a.c)-rank(b.c);
     });
-  const notifOn=state.notify.enabled;
+
   return `
     <div class="stats three">
       ${statTile(per(7),'weekly')}
@@ -3530,13 +4124,6 @@ function anTotalHtml(){
           <span class="t">${h.name}</span>
           <span class="d">${c.offSeason?'off-season':cadenceText(h.key)+(c.status==='below'?' · below':c.status==='above'?' · ahead':' · on track')}</span>
         </div>`).join('')}
-      </div>
-      <hr class="hr">
-      <div class="switchrow" data-sheet="notif-settings" role="button" style="cursor:pointer">
-        <span style="color:var(--ink2);display:flex">${ICONS.bell}</span>
-        <div class="main"><div style="font-weight:700;font-size:14.5px">Notifications</div>
-          <div class="s" style="font-size:12.5px;color:var(--ink2)">${notifOn?'On · tap to choose what you’re told about':'Off · tap to set up'}</div></div>
-        ${ICONS.chevR.replace('<svg','<svg width="18" height="18" style="color:var(--ink3)"')}
       </div>
     </div>`;
 }
@@ -3615,6 +4202,8 @@ document.addEventListener('click',e=>{
     const k=daily.dataset.daily;
     setProtoDay({[k]:!protoDay()[k]});render();return;
   }
+  const rd=e.target.closest('[data-remdone]');
+  if(rd){ completeReminder(rd.dataset.remdone); return; }
   const dr=e.target.closest('[data-drink]');
   if(dr){
     const wk=protoWeek(); if(!wk)return;
@@ -3647,7 +4236,10 @@ document.addEventListener('change',e=>{
 /* ---------- boot ---------- */
 try{ if(navigator.storage&&navigator.storage.persist)navigator.storage.persist(); }catch(e){}
 window.addEventListener('pagehide',()=>{try{save();}catch(e){}});
-document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden'){try{save();}catch(e){}} });
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='hidden'){try{save();}catch(e){}}
+  else{ try{ checkCadence(); }catch(e){} }
+});
 runSeeds();
 applyTheme(state.theme,{silent:true});
 checkThemeRotation();
@@ -3667,7 +4259,7 @@ photosInit().then(()=>{
 /* ============================================================
    PWA layer — service worker, real downloads, storage health
    ============================================================ */
-const APP_VERSION='2026.08.29-4';
+const APP_VERSION='2026.09.01-2';
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{ navigator.serviceWorker.register('./sw.js').catch(()=>{}); });
@@ -3701,7 +4293,6 @@ SHEETS['settings']=()=>{
     body:`
       <p class="sub">Your data is stored on this phone. Export a backup now and then — it’s your safety net.</p>
       ${state.lastBackup?`<p class="note">Last backup: ${fmtDate(state.lastBackup)}</p>`:'<p class="note" style="color:var(--danger)">No backup yet.</p>'}
-      <button class="btn quiet" id="go-themes" style="margin-top:6px">${ICONS.grid} Themes</button>
       <div class="actions" style="margin-top:10px">
         <button class="btn" id="bk-exp">Export backup</button>
         <button class="btn quiet" id="bk-imp">Import backup</button>
@@ -3728,7 +4319,6 @@ SHEETS['settings']=()=>{
       <button class="btn danger" id="bk-reset">Erase all data</button>
       <p class="note">Version ${APP_VERSION} · Always open Life Dashboard from its Home Screen icon — Safari tabs and in-app browsers keep separate copies of your data.</p>`,
     onMount(el){
-      el.querySelector('#go-themes').addEventListener('click',()=>{closeSheet(true);SHEETS['themes']();});
       el.querySelector('#bk-exp').addEventListener('click',exportBackup);
       el.querySelector('#bk-imp').addEventListener('click',importBackup);
       el.querySelector('#bk-reset').addEventListener('click',()=>{
