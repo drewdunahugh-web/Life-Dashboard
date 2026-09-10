@@ -394,6 +394,10 @@ label{display:block;font-size:13px;font-weight:600;color:var(--ink2);margin:12px
 .macro{background:var(--surface2);border-radius:12px;padding:9px;text-align:center}
 .macro .k{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
 .macro .l{font-size:10.5px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em}
+.streak{display:inline-flex;align-items:center;gap:3px;margin-right:6px;padding:1px 9px 1px 6px;border-radius:100px;background:var(--surface2);font-size:12px;font-weight:800;color:var(--ink3);font-variant-numeric:tabular-nums}
+.streak svg{width:14px;height:14px}
+.streak.on{color:var(--accent)}
+.streak.on svg{fill:currentColor;fill-opacity:.28}
 .rules{font-size:13.5px;line-height:1.6;color:var(--ink2)}
 .rules li{margin:4px 0 4px 18px}
 .rules b{color:var(--ink)}
@@ -540,6 +544,7 @@ const ICONS={
   folder:`<svg viewBox="0 0 24 24" ${SW}><path d="M3.5 7.5a2 2 0 0 1 2-2h3.2l2 2.2h7.8a2 2 0 0 1 2 2v8.3a2 2 0 0 1-2 2H5.5a2 2 0 0 1-2-2z"/></svg>`,
   disc:`<svg viewBox="0 0 24 24" ${SW}><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.2"/></svg>`,
   bell:`<svg viewBox="0 0 24 24" ${SW}><path d="M6.5 10a5.5 5.5 0 0 1 11 0c0 4 1.5 5.5 1.5 5.5H5S6.5 14 6.5 10z"/><path d="M10.2 19a2 2 0 0 0 3.6 0"/></svg>`,
+  flame:`<svg viewBox="0 0 24 24" ${SW}><path d="M12 3c.6 3.4 4.8 5.6 4.8 10.2a4.8 4.8 0 0 1-9.6 0c0-2.1 1-3.7 2.1-4.7.3 1.7 1.2 2.7 2.4 2.9C11.1 9.1 11 6.2 12 3z"/></svg>`,
   bullet:`<svg viewBox="0 0 24 24" ${SW}><circle cx="5" cy="7" r="1.4" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="5" cy="17" r="1.4" fill="currentColor" stroke="none"/><path d="M9.5 7h11M9.5 12h11M9.5 17h11"/></svg>`,
   numlist:`<svg viewBox="0 0 24 24" ${SW}><path d="M9.5 7h11M9.5 12h11M9.5 17h11"/><path d="M4 5.5h1.2V9M3.6 15.2c0-.6.5-1 1.1-1s1.1.4 1.1 1c0 1-2.2 1.5-2.2 2.8h2.4" stroke-width="1.5"/></svg>`,
   indent:`<svg viewBox="0 0 24 24" ${SW}><path d="M10 7h10M10 12h10M10 17h10M4 9.5L6.5 12 4 14.5z" /></svg>`,
@@ -2258,6 +2263,21 @@ function setWeekDrinks(w,n){
   save();
 }
 
+/* consecutive fully-checked days; today only counts once it's complete, and an unfinished today doesn't break the run */
+function dailyStreak(){
+  const start=state.protocol.startDate;
+  if(!start)return 0;
+  const d=new Date();
+  if(!dailyComplete(dstr(d)))d.setDate(d.getDate()-1);
+  let n=0;
+  while(dstr(d)>=start&&dailyComplete(dstr(d))){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+function streakChip(){
+  const n=dailyStreak();
+  return `<span class="streak ${n?'on':''}" aria-label="${n} day streak">${ICONS.flame}${n}</span>`;
+}
+
 /* ---------- line chart ---------- */
 function lineChart(points,color,opts={}){
   // points: [{x:label, y:number|null}]
@@ -2329,7 +2349,7 @@ function pageLifting(){
   </div>`;
 
   const dailyCard=`<div class="card">
-    <h2><span class="grow">Today</span><span class="badge">${DAILY_ITEMS.filter(i=>today[i.k]).length+(today.weight?1:0)}/${DAILY_ITEMS.length+1}</span></h2>
+    <h2><span class="grow">Today</span>${streakChip()}<span class="badge">${DAILY_ITEMS.filter(i=>today[i.k]).length+(today.weight?1:0)}/${DAILY_ITEMS.length+1}</span></h2>
     ${DAILY_ITEMS.map(i=>`
       <button class="chk ${today[i.k]?'on':''}" data-daily="${i.k}" style="width:100%;text-align:left">
         <span class="box">${ICONS.check}</span><span class="t">${esc(i.t)}</span>
@@ -2467,7 +2487,7 @@ function pageLifting(){
   </div>`;
 
   return backBar('Lifting + Dieting','lifting')+head+`
-    ${linkBtn('https://www.myfitnesspal.com','Open MyFitnessPal','lifting','cooking')}
+    ${linkBtn('https://cronometer.com','Open Cronometer','lifting','cooking')}
     ${setupCard}
     ${dailyCard}
     <div class="card"><h2><span class="grow">Training</span><span class="badge">${trained}/4 this week</span></h2>
@@ -4259,7 +4279,7 @@ photosInit().then(()=>{
 /* ============================================================
    PWA layer — service worker, real downloads, storage health
    ============================================================ */
-const APP_VERSION='2026.09.01-2';
+const APP_VERSION='2026.09.10-1';
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{ navigator.serviceWorker.register('./sw.js').catch(()=>{}); });
