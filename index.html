@@ -2506,7 +2506,8 @@ function pageLifting(){
         <li>Log weight, reps and RIR on every set</li>
         <li>Hit the top of the rep range on all sets → add weight, drop to the bottom</li>
       </ul>
-    </div>`;
+    </div>
+    ${wk?`<button class="btn line" data-sheet="proto-restart" style="margin-bottom:6px">Restart the protocol</button>`:''}`;
 }
 
 /* ---------- GOLF ---------- */
@@ -3353,6 +3354,26 @@ SHEETS['proto-start']=()=>openSheet({title:'Start the 16-week protocol',
       const w=Number(el.querySelector('#sh-w').value);
       if(w){state.protocol.weeklyWaist[1]=w;state.protocol.setup.waist=true;}
       save();render();toast('Week 1 — go');
+    }}]});
+
+SHEETS['proto-restart']=()=>openSheet({title:'Restart the protocol',
+  sub:`Week 1 again · ${PROTO.targetLo}–${PROTO.targetHi} lb`,
+  body:`<label>New start date</label><input type="date" id="sh-date" value="${todayStr()}">
+    <label>Waist at the navel (inches)</label><input id="sh-w" type="number" inputmode="decimal" placeholder="e.g. 33.5">`,
+  actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
+    {label:'Restart',handler:(el)=>{
+      const p=state.protocol;
+      /* the run you finish with is archived, never erased */
+      p.history=p.history||[];
+      p.history.push({startDate:p.startDate,endedOn:todayStr(),
+        weeklyWaist:{...p.weeklyWaist},checkpoints:{...p.checkpoints},drinks:{...p.drinks}});
+      p.weeklyWaist={}; p.checkpoints={}; p.drinks={}; p.setup={};
+      p.startDate=shDate(el);
+      const w=Number(el.querySelector('#sh-w').value);
+      if(w){p.weeklyWaist[1]=w;p.setup.waist=true;}
+      PROTO.checkpoints.forEach(x=>delete state.notify.sent['cpt'+x]);
+      delete state.notify.sent['daily']; delete state.notify.sent['sunday'];
+      save();render();toast('Week 1 — go again');
     }}]});
 SHEETS['proto-weigh']=()=>openSheet({title:'Weigh in',
   body:`<label>Weight (lb)</label><input id="sh-w" type="number" inputmode="decimal" value="${protoDay().weight||''}" placeholder="e.g. 164.2">${dateField()}`,
@@ -4279,7 +4300,7 @@ photosInit().then(()=>{
 /* ============================================================
    PWA layer — service worker, real downloads, storage health
    ============================================================ */
-const APP_VERSION='2026.09.10-1';
+const APP_VERSION='2026.09.28-1';
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{ navigator.serviceWorker.register('./sw.js').catch(()=>{}); });
