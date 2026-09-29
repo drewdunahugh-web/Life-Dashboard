@@ -590,9 +590,9 @@ const TARGETS={
 
 /* ---------- lifting program (from Drew's Google Sheet) ---------- */
 const PROGRAM_DAYS=[
-  {title:'Bis + Chest', ex:[['Preacher Curl',2],['Hammer Curl',2],['Smith Incline',2],['Pec Dec',2],['Lateral Raise',2]]},
-  {title:'Tris + Traps',ex:[['Smith J.M. Press',2],['Tricep Extension',2],['T-Bar',2],['Kelso Shrugs',2],['Cable Crunch',2]]},
-  {title:'Legs',        ex:[['Smith Squats',2],['RDL',2],['Leg Press',2],['Leg Extension',1],['Leg Curl',2],['Standing Calf Raise',2]]},
+  {title:'Bis + Chest', ex:[['Cable Curl',2],['Hammer Curl',2],['Dumbbell Incline',2],['Pec Dec',2],['Lateral Raise',2]]},
+  {title:'Tris + Traps',ex:[['Cable Pushdowns',2],['Tricep Extension',2],['T-Bar',2],['Kelso Shrugs',2],['Cable Crunch',2]]},
+  {title:'Legs',        ex:[['Pendulum Squat',2],['RDL',2],['Leg Press',2],['Leg Extension',1],['Leg Curl',2],['Standing Calf Raise',2]]},
   {title:'Shoulders + Lats',ex:[['Forearm Curl',2],['Lateral Raise',3],['Rev Pec Dec',2],['Pulldowns',3],['SA Cable Row',2]]},
 ];
 const N_CYCLES=16;
@@ -3366,9 +3366,10 @@ SHEETS['proto-restart']=()=>openSheet({title:'Restart the protocol',
       /* the run you finish with is archived, never erased */
       p.history=p.history||[];
       p.history.push({startDate:p.startDate,endedOn:todayStr(),
-        weeklyWaist:{...p.weeklyWaist},checkpoints:{...p.checkpoints},drinks:{...p.drinks}});
-      p.weeklyWaist={}; p.checkpoints={}; p.drinks={}; p.setup={};
+        weeklyWaist:{...p.weeklyWaist},checkpoints:{...p.checkpoints},drinks:{...p.drinks},daily:{...p.daily}});
+      p.weeklyWaist={}; p.checkpoints={}; p.drinks={}; p.setup={}; p.daily={};
       p.startDate=shDate(el);
+      state.lifting.cycle=1;
       const w=Number(el.querySelector('#sh-w').value);
       if(w){p.weeklyWaist[1]=w;p.setup.waist=true;}
       PROTO.checkpoints.forEach(x=>delete state.notify.sent['cpt'+x]);
@@ -4300,10 +4301,35 @@ photosInit().then(()=>{
 /* ============================================================
    PWA layer — service worker, real downloads, storage health
    ============================================================ */
-const APP_VERSION='2026.09.28-1';
+const APP_VERSION='2026.09.28-3';
 
+/* iOS freezes a Home-Screen app instead of reloading it, so ask for a new
+   version on launch, every time it comes back to the front, and hourly. */
+let swReg=null, swReloading=false;
+const swHadController=('serviceWorker' in navigator)&&!!navigator.serviceWorker.controller;
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{ navigator.serviceWorker.register('./sw.js').catch(()=>{}); });
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(!swHadController||swReloading)return;
+    swReloading=true; location.reload();
+  });
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').then(reg=>{
+      swReg=reg;
+      reg.update().catch(()=>{});
+      setInterval(()=>{reg.update().catch(()=>{});},3600000);
+    }).catch(()=>{});
+  });
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible'&&swReg)swReg.update().catch(()=>{});
+  });
+}
+async function checkForUpdate(){
+  if(!swReg){toast('Updates unavailable here');return;}
+  try{
+    await swReg.update();
+    if(swReg.installing||swReg.waiting){toast('Update found — reloading');setTimeout(()=>location.reload(),900);}
+    else toast('You’re on the latest');
+  }catch(e){toast('Could not check just now');}
 }
 
 async function exportBackup(){
@@ -4357,11 +4383,13 @@ SHEETS['settings']=()=>{
       </div>
       <p class="note">iOS can’t wake a web app on a schedule, so cadence nudges are delivered when you open Life Dashboard rather than in the middle of the night.</p>
       <hr class="hr">
+      <button class="btn quiet" id="bk-upd" style="margin-bottom:10px">Check for updates</button>
       <button class="btn danger" id="bk-reset">Erase all data</button>
       <p class="note">Version ${APP_VERSION} · Always open Life Dashboard from its Home Screen icon — Safari tabs and in-app browsers keep separate copies of your data.</p>`,
     onMount(el){
       el.querySelector('#bk-exp').addEventListener('click',exportBackup);
       el.querySelector('#bk-imp').addEventListener('click',importBackup);
+      el.querySelector('#bk-upd').addEventListener('click',checkForUpdate);
       el.querySelector('#bk-reset').addEventListener('click',()=>{
         openSheet({title:'Erase everything?',sub:'This deletes all logs, lists and photos on this device. A backup file is the only way back.',
           actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
