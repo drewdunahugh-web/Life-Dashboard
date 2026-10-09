@@ -3145,7 +3145,6 @@ SHEETS['settings']=()=>{
       el.querySelector('#bk-imp').addEventListener('click',importBackup);
       el.querySelector('#bk-trash').addEventListener('click',()=>{closeSheet(true);SHEETS['trash']();});
       el.querySelector('#bk-snap').addEventListener('click',()=>{closeSheet(true);SHEETS['snapshots']();});
-      el.querySelector('#bk-cloud').addEventListener('click',()=>{closeSheet(true);SHEETS['cloud']();});
       el.querySelector('#bk-reset').addEventListener('click',()=>{
         openSheet({title:'Erase everything?',sub:'This deletes all logs, lists and photos on this device.',
           actions:[{label:'Cancel',style:'quiet',handler:()=>{}},
@@ -4523,7 +4522,7 @@ photosInit().then(()=>{
 /* ============================================================
    PWA layer — service worker, real downloads, storage health
    ============================================================ */
-const APP_VERSION='2026.10.09-5';
+const APP_VERSION='2026.10.09-6';
 
 /* iOS freezes a Home-Screen app instead of reloading it, so ask for a new
    version on launch, every time it comes back to the front, and hourly. */
@@ -4762,6 +4761,7 @@ SHEETS['settings']=()=>{
       el.querySelector('#bk-imp').addEventListener('click',importBackup);
       el.querySelector('#bk-trash').addEventListener('click',()=>{closeSheet(true);SHEETS['trash']();});
       el.querySelector('#bk-snap').addEventListener('click',()=>{closeSheet(true);SHEETS['snapshots']();});
+      el.querySelector('#bk-cloud').addEventListener('click',()=>{closeSheet(true);SHEETS['cloud']();});
       el.querySelector('#bk-upd').addEventListener('click',checkForUpdate);
       el.querySelector('#bk-reset').addEventListener('click',()=>{
         openSheet({title:'Erase everything?',sub:'This deletes all logs, lists and photos on this device. A backup file is the only way back.',

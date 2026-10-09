@@ -1,5 +1,5 @@
 /* Life Dashboard service worker — offline shell + safe updates */
-const VERSION = '2026.10.09-5';
+const VERSION = '2026.10.09-6';
 const CACHE = 'life-dashboard-' + VERSION;
 const ASSETS = [
   './',
