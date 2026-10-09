@@ -4523,7 +4523,7 @@ photosInit().then(()=>{
 /* ============================================================
    PWA layer — service worker, real downloads, storage health
    ============================================================ */
-const APP_VERSION='2026.10.09-4';
+const APP_VERSION='2026.10.09-5';
 
 /* iOS freezes a Home-Screen app instead of reloading it, so ask for a new
    version on launch, every time it comes back to the front, and hourly. */
@@ -4570,7 +4570,12 @@ function syncCfg(){
   return state.sync;
 }
 function syncReady(){ const c=syncCfg(); return !!(c.url&&c.key&&c.code); }
-function syncBase(){ return syncCfg().url.replace(/\/+$/,'')+'/rest/v1/sync'; }
+function syncBase(){
+  /* accept either the bare project URL or the full REST endpoint */
+  let u=syncCfg().url.trim().replace(/\/+$/,'');
+  u=u.replace(/\/rest\/v1$/,'');
+  return u+'/rest/v1/sync';
+}
 function syncHeaders(){
   const c=syncCfg();
   return {apikey:c.key,Authorization:'Bearer '+c.key,'x-sync-code':c.code,'Content-Type':'application/json'};
